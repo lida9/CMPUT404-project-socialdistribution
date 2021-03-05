@@ -43,6 +43,16 @@ class Home extends Component {
     }
   }
 
+  clearInbox = async () => {
+    try {
+      const { authorID } = this.props;
+      const res = await axios.delete(`service/author/${authorID.authorID}/inbox/`);
+      this.setState({ inbox: res.data.items });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   render() {
     const { authorID } = this.props;
     return (
@@ -58,7 +68,7 @@ class Home extends Component {
                 padding: 15
               }}
             >
-              Home
+              Inbox
           </h1>
             :
             <h1
@@ -78,7 +88,15 @@ class Home extends Component {
           onClick={this.getInbox}
           style={{ margin: 10 }}
         >
-          New Inbox
+          Refresh Inbox
+        </Button>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={this.clearInbox}
+          style={{ margin: 10 }}
+        >
+          Clear Inbox
         </Button>
         <div>
           {

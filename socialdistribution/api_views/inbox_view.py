@@ -95,6 +95,7 @@ def inbox_detail(request, authorID):
         if not created:
             # if not just created then delete, if just created then the inbox is empty
             inbox.delete()
+            inbox,_ = Inbox.objects.create(authorID=authorID)
         return Response({'message':'inbox cleared'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
