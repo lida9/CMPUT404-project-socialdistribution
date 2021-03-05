@@ -5,6 +5,10 @@ import axios from 'axios';
 
 // This component is used to display the friend request
 class FollowCard extends Component {
+    state = {
+      clicked: null
+    }
+
     accept = async() => {
         var author_url = this.props.like.object.id
         var author_data = author_url.split("/")
@@ -20,7 +24,7 @@ class FollowCard extends Component {
         try {
           let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`,post_information)
           if (doc.status == 200) {
-            console.log(doc)
+            this.setState({clicked: "Accepted"});
           }
         } catch (err) {
             console.log(err.response.status)
@@ -42,7 +46,7 @@ class FollowCard extends Component {
         try {
           let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`,post_information)
           if (doc.status == 200) {
-            console.log(doc)
+            this.setState({clicked: "Rejected"});
           }
         } catch (err) {
             console.log(err.response.status)
@@ -53,10 +57,17 @@ class FollowCard extends Component {
         return (
             <div id='follow-object' style={{ border: "solid 1px grey" }}>
                 {this.props.like.summary}
-                <div class="buttonRight">
-                <Button color="primary" variant="outlined" onClick = {this.accept}>Accept</Button>
-                <Button color="primary" variant="outlined" onClick = {this.reject}>Reject</Button>
-                </div>
+                {
+                  this.state.clicked === null ?
+                  <div class="buttonRight">
+                  <Button color="primary" variant="outlined" onClick = {this.accept}>Accept</Button>
+                  <Button color="primary" variant="outlined" onClick = {this.reject}>Reject</Button>
+                  </div>
+                  :
+                  <div class="text">
+                    <p>{this.state.clicked}</p>
+                  </div>
+                }
             </div>
     )
   }
