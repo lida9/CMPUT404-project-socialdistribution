@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import PostCard from '../posts/PostCard';
 import LikeCard from './LikeCard';
+import InboxPostCard from './InboxPostCard'
+import FollowCard from './FollowCard'
 
 // This component is used to display items in inbox
 class ObjectCard extends Component {
-  
+
   renderItem = () => {
     if (this.props.item.type === "post")  {
-      return <PostCard post={this.props.item}/>
+      return <InboxPostCard post={this.props.item}/>
     } else if (this.props.item.type === "like") {
       return <LikeCard like={this.props.item}/>
+    } else if (this.props.item.type === "Follow") {
+      return <FollowCard like={this.props.item}/>
     }
   }
 
