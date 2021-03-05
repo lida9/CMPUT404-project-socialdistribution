@@ -13,3 +13,7 @@
 #post-form, #post-description, #post-content {
   margin-bottom: 15px;
 }
+
+.imagePreview {
+  height: 300px;
+}

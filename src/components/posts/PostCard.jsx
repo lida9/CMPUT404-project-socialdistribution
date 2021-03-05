@@ -6,6 +6,7 @@ import ReactMarkDown from "react-markdown";
 import CommentCard from "../comments/CommentCard";
 import CommentForm from "../comments/CommentForm";
 import PostEditForm from "../posts/PostEditForm";
+import "../../styles/postCard.css";
 
 // This component is used to display the Post
 class PostCard extends Component {
@@ -18,7 +19,7 @@ class PostCard extends Component {
     content: "",
     visibility: "",
     unlisted: false,
-    like_button_text: "click to like the post",
+    like_button_text: "Like Post",
     showComments: false,
     showEditForm: false,
   }
@@ -49,9 +50,13 @@ class PostCard extends Component {
 
   renderPostContent = () => {
     const { contentType } = this.props.post;
+    console.log(contentType);
     switch (contentType) {
       case "text/markdown":
         return <ReactMarkDown>{this.props.post.content}</ReactMarkDown>;
+      case "image/png;base64":
+      case "image/jpeg;base64":
+        return <div><img class="imagePreview" src={this.props.post.content} alt="Unavailable" /></div>
       default:
         return <p>{this.props.post.content}</p>
     }
@@ -79,16 +84,12 @@ class PostCard extends Component {
         if (doc.status === 200) {
           console.log(doc)
           window.location = '/aboutme'
-
         }
-
       } catch (err) {
         console.log(err.response.status)
       }
     }
   }
-
-
 
   render() {
     // console.log("this.props.post.postID:", this.props.post.postID);
@@ -97,10 +98,10 @@ class PostCard extends Component {
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-        <Button color="primary" onClick={this.likepostClick}>{this.state.like_button_text}</Button>
-        <button onClick={this.ShowEdit}>click to edit the post</button>
-        <Button color="primary" onClick={this.deletepostClick}>click to delete the post</Button>
-        <Button color="primary" onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick}>{this.state.like_button_text}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.ShowEdit}>edit post</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.deletepostClick}>Delete</Button>
 
         <br />
         {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "../../styles/followCard.css";
+import { Button } from "@material-ui/core"
 import axios from 'axios';
 
 // This component is used to display the friend request
@@ -53,8 +54,8 @@ class FollowCard extends Component {
             <div id='follow-object' style={{ border: "solid 1px grey" }}>
                 {this.props.like.summary}
                 <div class="buttonRight">
-                <button onClick = {this.accept}>Accept</button>
-                <button onClick = {this.reject}>Reject</button>
+                <Button color="primary" variant="outlined" onClick = {this.accept}>Accept</Button>
+                <Button color="primary" variant="outlined" onClick = {this.reject}>Reject</Button>
                 </div>
             </div>
     )

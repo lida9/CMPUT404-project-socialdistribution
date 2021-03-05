@@ -86,7 +86,7 @@ class UploadImage extends Component {
     return (
       <div>
         <div>
-          <img src={this.state.imagePreview} alt="imagePreview" />
+          <img src={this.state.imagePreview} />
           <h1>Select Image</h1>
           <button onClick={this.showOpenFileDlg}>Choose Image</button>
           <input type="file" ref={this.chooseFile} onChange={this.onImageChange} style={{ display: 'none' }}

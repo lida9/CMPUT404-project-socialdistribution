@@ -9,7 +9,6 @@
 #no-user-header h1 {
   margin-left: 30px;
   margin-bottom: 20px;
-  font-family:Georgia, 'Times New Roman', Times, serif;
 }
 
 #no-user-header hr {
@@ -28,6 +27,5 @@
 
 #no-user-message {
   margin: 60px 40px;
-  font-family: Georgia, 'Times New Roman', Times, serif;
   float: right;
 }

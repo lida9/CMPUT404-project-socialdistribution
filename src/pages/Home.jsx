@@ -47,7 +47,7 @@ class Home extends Component {
     try {
       const { authorID } = this.props;
       const res = await axios.delete(`service/author/${authorID.authorID}/inbox/`);
-      this.setState({ inbox: res.data.items });
+      this.setState({ inbox: [] });
     } catch (e) {
       console.log(e);
     }
@@ -60,16 +60,44 @@ class Home extends Component {
         {this.renderHeader()}
         {
           authorID !== null ?
-            <h1
-              id="home-title-login"
-              style={{
-                textAlign: "center",
-                fontFamily: "sans-serif",
-                padding: 15
-              }}
-            >
-              Inbox
-          </h1>
+            <div>
+              <h1
+                id="home-title-login"
+                style={{
+                  textAlign: "center",
+                  fontFamily: "sans-serif",
+                  padding: 15
+                }}
+              >
+                Inbox
+              </h1>
+              <Button
+              color="primary"
+              variant="outlined"
+              onClick={this.getInbox}
+              style={{ margin: 10 }}
+              >
+                Refresh Inbox
+              </Button>
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={this.clearInbox}
+                style={{ margin: 10 }}
+              >
+                Clear Inbox
+              </Button>
+              <div>
+                {
+                  this.state.inbox.length !== 0 ?
+                    this.state.inbox.map((item, index) => {
+                      return <ObjectCard key={index} item={item} />
+                    })
+                    :
+                    null
+                }
+              </div>
+            </div>
             :
             <h1
               id="home-title-logout"
@@ -80,34 +108,8 @@ class Home extends Component {
               }}
             >
               Please Login
-          </h1>
+            </h1>
         }
-        <Button
-          color="primary"
-          variant="outlined"
-          onClick={this.getInbox}
-          style={{ margin: 10 }}
-        >
-          Refresh Inbox
-        </Button>
-        <Button
-          color="primary"
-          variant="outlined"
-          onClick={this.clearInbox}
-          style={{ margin: 10 }}
-        >
-          Clear Inbox
-        </Button>
-        <div>
-          {
-            this.state.inbox.length !== 0 ?
-              this.state.inbox.map((item, index) => {
-                return <ObjectCard key={index} item={item} />
-              })
-              :
-              null
-          }
-        </div>
       </div>
     )
   }

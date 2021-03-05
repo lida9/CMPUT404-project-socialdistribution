@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "../styles/register.css";
+import { Button } from "@material-ui/core"
 import { setCurrentUser } from "../redux/user/actions"
 import { connect } from "react-redux"
 
@@ -82,7 +83,7 @@ class Register extends Component {
           placeholder="CONFIRM"
           value={confirm}
           onChange={(e => this.setState({ confirm: e.target.value }))} />
-        <button id="register-btn" onClick={this.handleRegister}>Register</button>
+        <Button color="primary" variant="outlined" id="register-btn" onClick={this.handleRegister}>Register</Button>
       </div>
     )
   }
