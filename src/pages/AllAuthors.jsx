@@ -13,6 +13,10 @@ class AllAuthors extends Component {
     const data = doc.data;
     console.log("all author: ", data);
     // console.log(data[0].id.split("/"));
+    for(var i = 0; i <= data.length; i = i + 1){
+      this.state.allAuthors.push(i)
+    }
+
 
   }
 
