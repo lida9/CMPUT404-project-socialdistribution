@@ -5,6 +5,7 @@ import { Button } from "@material-ui/core"
 import ReactMarkDown from "react-markdown";
 import CommentCard from "../comments/CommentCard";
 import CommentForm from "../comments/CommentForm";
+import PostEditForm from "../posts/PostEditForm";
 
 // This component is used to display the Post
 class PostCard extends Component {
@@ -19,6 +20,7 @@ class PostCard extends Component {
     unlisted: false,
     like_button_text: "click to like the post",
     showComments: false,
+    showEditForm: false,
   }
 
   likepostClick = async () => {
@@ -55,8 +57,9 @@ class PostCard extends Component {
     }
   }
 
-  getComments = () => {
-
+  ShowEdit = () => {
+    const { showEditForm } = this.state;
+    this.setState({ showEditForm: !showEditForm });
   }
 
   handleShowComments = () => {
@@ -64,28 +67,28 @@ class PostCard extends Component {
     this.setState({ showComments: !showComments })
   }
 
-  deletepostClick=async()=>{
+  deletepostClick = async () => {
     var login_author_id = this.props.authorID.authorID
     var post_author_id = this.props.post.authorID
     var post_id = this.props.post.postID
-    if (login_author_id !== post_author_id){
+    if (login_author_id !== post_author_id) {
       window.alert("you cannot delete this post")
-    }else{
-      try{
+    } else {
+      try {
         let doc = await axios.delete(`service/author/${post_author_id}/posts/${post_id}/`)
-        if(doc.status === 200){
+        if (doc.status === 200) {
           console.log(doc)
           window.location = '/aboutme'
-  
+
         }
-  
-      }catch (err) {
+
+      } catch (err) {
         console.log(err.response.status)
       }
     }
   }
 
-  
+
 
   render() {
     // console.log("this.props.post.postID:", this.props.post.postID);
@@ -94,11 +97,11 @@ class PostCard extends Component {
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-        <Button color="primary" onClick = {this.likepostClick}>{this.state.like_button_text}</Button> 
-        <button >click to edit the post</button>
-        <Button  color="primary" onClick = {this.deletepostClick}>click to delete the post</Button>
+        <Button color="primary" onClick={this.likepostClick}>{this.state.like_button_text}</Button>
+        <button onClick={this.ShowEdit}>click to edit the post</button>
+        <Button color="primary" onClick={this.deletepostClick}>click to delete the post</Button>
         <Button color="primary" onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
-        
+
         <br />
         {
           this.state.showComments ?
@@ -116,6 +119,9 @@ class PostCard extends Component {
             </div>
             :
             null
+        }
+        {
+          this.state.showEditForm ? <PostEditForm postID={this.props.post.postID} /> : null
         }
 
       </div>
