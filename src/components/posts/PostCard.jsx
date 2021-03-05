@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import axios from 'axios';
-// import ReactMarkDown from "react-markdown";
+import { Button } from "@material-ui/core"
+import ReactMarkDown from "react-markdown";
 
 // This component is used to display the Post
 class PostCard extends Component {
@@ -14,9 +15,10 @@ class PostCard extends Component {
     content: "",
     visibility: "PUBLIC",
     unlisted: false,
-    like_button_text:"click to like the post"
+    like_button_text: "click to like the post"
   }
-  likepostClick= async()=>{
+
+  likepostClick = async () => {
     var author_url = this.props.post.author.id
     var author_data = author_url.split("/")
     var post_author_id = author_data[4]
@@ -25,23 +27,29 @@ class PostCard extends Component {
 
     var post_information = {
       "summary": "post",
-      "type":"like",
-      "author_like_ID":login_author_id,
-      "postID":post_id
+      "type": "like",
+      "author_like_ID": login_author_id,
+      "postID": post_id
     }
-    try{
-      let doc = await axios.post(`service/author/${post_author_id}/inbox/`,post_information)
-      if(doc.status == 200){
+    try {
+      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
+      if (doc.status === 200) {
         console.log(doc)
-        this.setState({like_button_text :"you have liked!"});
-
+        this.setState({ like_button_text: "you have liked!" });
       }
-
-    }catch (err) {
+    } catch (err) {
       console.log(err.response.status)
     }
+  }
 
-    
+  renderPostContent = () => {
+    const { contentType } = this.props.post;
+    switch (contentType) {
+      case "text/markdown":
+        return <ReactMarkDown>{this.props.post.content}</ReactMarkDown>;
+      default:
+        return <p>{this.props.post.content}</p>
+    }
   }
 
   render() {
@@ -49,8 +57,9 @@ class PostCard extends Component {
       <div style={{ border: "solid 1px grey" }}>
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
-        <p>Content: {this.props.post.content}</p>
-         <button onClick = {this.likepostClick}>{this.state.like_button_text}</button> 
+        Content: {this.renderPostContent()}
+        <button onClick={this.likepostClick}>{this.state.like_button_text}</button>
+        <Button color="primary">More</Button>
       </div>
     )
   }
