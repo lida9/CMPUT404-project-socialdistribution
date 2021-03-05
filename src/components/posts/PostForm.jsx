@@ -54,17 +54,21 @@ class PostForm extends Component {
     this.setState({ show: !show });
   }
 
-  sendToFollowers = async (authorID, postID) => {
-    // TODO check visibility
-    // get followers
-    var res = await axios.get(`service/author/${authorID}/followers/`);
-    var followers = res.data.items;
-    for (let follower of followers) {
-      // send to follower's inbox
-      let splitUrl = follower.id.split("/");
-      let followerID = splitUrl[splitUrl.length - 1];
+  sendToFollowers = async (authorID, postID, visibility) => {
+    if (visibility === "PUBLIC") {
+      // get followers
+      var res = await axios.get(`service/author/${authorID}/followers/`);
+    } else {
+      // get friends
+      var res = await axios.get(`service/author/${authorID}/friends/`);
+    }
+    var authors = res.data.items;
+    for (let author of authors) {
+      // send to author's inbox
+      let splitUrl = author.id.split("/");
+      let ID = splitUrl[splitUrl.length - 1];
       let data = { "type": "post", "postID": postID };
-      axios.post(`service/author/${followerID}/inbox/`, data);
+      axios.post(`service/author/${ID}/inbox/`, data);
     }
   }
 
@@ -94,7 +98,7 @@ class PostForm extends Component {
         this.setState({ show: false });
         // window.location = "/aboutme";
         this.props.getPosts();
-        this.sendToFollowers(authorID.authorID, res.data.postID);
+        this.sendToFollowers(authorID.authorID, res.data.postID, visibility);
       } catch (err) {
         console.log(err.message);
       }

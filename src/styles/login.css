@@ -24,10 +24,6 @@
   padding-right: 30px;
 }
 
-#login-btn:hover {
-  font-style: italic;
-}
-
 #login-btn:focus{
   outline: none;
 }
