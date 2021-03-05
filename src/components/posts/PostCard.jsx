@@ -44,13 +44,38 @@ class PostCard extends Component {
     
   }
 
+  deletepostClick=async()=>{
+    var login_author_id = this.props.authorID.authorID
+    var post_author_id = this.props.post.authorID
+    var post_id = this.props.post.postID
+    if (login_author_id !== post_author_id){
+      window.alert("you cannot delete this post")
+    }else{
+      try{
+        let doc = await axios.delete(`service/author/${post_author_id}/posts/${post_id}/`)
+        if(doc.status === 200){
+          console.log(doc)
+          window.location = '/aboutme'
+  
+        }
+  
+      }catch (err) {
+        console.log(err.response.status)
+      }
+    }
+  }
+
   render() {
     return (
       <div style={{ border: "solid 1px grey" }}>
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         <p>Content: {this.props.post.content}</p>
-         <button onClick = {this.likepostClick}>{this.state.like_button_text}</button> 
+         <button class="MuiButtonBase-root MuiButton-root MuiButton-outlined btn MuiButton-outlinedPrimary" 
+         tabindex="0" type="button" onClick = {this.likepostClick}>{this.state.like_button_text}</button> 
+         <button >click to edit the post</button>
+         <button class="MuiButtonBase-root MuiButton-root MuiButton-outlined btn MuiButton-outlinedPrimary" 
+         tabindex="0" type="button" onClick = {this.deletepostClick}>click to delete the post</button>
       </div>
     )
   }
