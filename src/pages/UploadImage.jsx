@@ -15,11 +15,9 @@ class UploadImage extends Component {
 
   onImageChange = event => {
     if (event.target.files && event.target.files[0]) {
-      // this.state.img = event.target.files[0];
-      this.setState({
-        img: event.target.files[0],
-        imagePreview: URL.createObjectURL(this.state.img)
-      });
+      this.setState({img: event.target.files[0]}, () => {
+        this.setState({imagePreview: URL.createObjectURL(this.state.img)});
+      })
     }
   };
   showOpenFileDlg = () => {
