@@ -64,6 +64,29 @@ class PostCard extends Component {
     this.setState({ showComments: !showComments })
   }
 
+  deletepostClick=async()=>{
+    var login_author_id = this.props.authorID.authorID
+    var post_author_id = this.props.post.authorID
+    var post_id = this.props.post.postID
+    if (login_author_id !== post_author_id){
+      window.alert("you cannot delete this post")
+    }else{
+      try{
+        let doc = await axios.delete(`service/author/${post_author_id}/posts/${post_id}/`)
+        if(doc.status === 200){
+          console.log(doc)
+          window.location = '/aboutme'
+  
+        }
+  
+      }catch (err) {
+        console.log(err.response.status)
+      }
+    }
+  }
+
+  
+
   render() {
     // console.log("this.props.post.postID:", this.props.post.postID);
     return (
@@ -71,8 +94,11 @@ class PostCard extends Component {
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-        <button onClick={this.likepostClick}>{this.state.like_button_text}</button>
+        <Button color="primary" onClick = {this.likepostClick}>{this.state.like_button_text}</Button> 
+        <button >click to edit the post</button>
+        <Button  color="primary" onClick = {this.deletepostClick}>click to delete the post</Button>
         <Button color="primary" onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+        
         <br />
         {
           this.state.showComments ?
