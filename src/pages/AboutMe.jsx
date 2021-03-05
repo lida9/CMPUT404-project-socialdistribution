@@ -29,7 +29,6 @@ class AboutMe extends Component {
   getPosts = async () => {
     const { authorID } = this.props;
     const doc = await axios.get(`service/author/${authorID.authorID}/posts/`);
-    console.log(doc.data.posts);
     this.setState({ userPosts: doc.data.posts });
   }
 

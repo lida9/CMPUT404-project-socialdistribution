@@ -18,7 +18,6 @@ class PostForm extends Component {
   }
 
   componentDidMount = () => {
-    console.log("authorID in PostForm (componentDidMount): ", this.props.authorID);
   }
 
   handleShow = () => {
