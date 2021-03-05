@@ -1,28 +1,53 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import axios from "axios";
-// import {connect} from "react-redux";
+import AuthorCard from '../components/authors/AuthorCard';
 
 class AllAuthors extends Component {
-
-  state = {
-    allAuthors: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentUser: null,
+      authors: []
+    }
   }
 
-  componentDidMount = async () => {
-    const doc = await axios.get("service/author/");
-    const data = doc.data;
-    console.log("all author: ", data);
-    // console.log(data[0].id.split("/"));
 
+  componentDidMount = async () => {
+    const {authorID} = this.props;
+    if (authorID) {
+      const author = await axios.get(`service/author/${authorID.authorID}/`);
+      const res = await axios.get("service/author/");
+      console.log(res.data);
+      this.setState({
+        currentUser: author.data,
+        authors: res.data
+      });
+    }
   }
 
   render() {
+    const { currentUser, authors } = this.state;
+    console.log(authors);
     return (
       <div>
-
+        <div>
+          {
+            authors.length !== 0 ?
+            authors.map((author, index) => {
+                return <AuthorCard key={index} currentUser={currentUser} author={author} />
+              })
+              :
+              null
+          }
+        </div>
       </div>
     )
   }
 }
 
-export default AllAuthors;
+const mapStateToProps = (state) => ({
+  authorID: state.user.authorID
+})
+
+export default connect(mapStateToProps)(AllAuthors);
