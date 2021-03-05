@@ -14,7 +14,6 @@ class UpdateProfileForm extends Component {
   }
 
   componentDidMount = () => {
-    console.log("authorID in UpdateProfileForm: ", this.props.authorID);
   }
 
   handleUpdate = async () => {

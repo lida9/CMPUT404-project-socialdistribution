@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import axios from 'axios';
-// import ReactMarkDown from "react-markdown";
+import { Button } from "@material-ui/core"
+import ReactMarkDown from "react-markdown";
+import CommentCard from "../comments/CommentCard";
+import CommentForm from "../comments/CommentForm";
 
 // This component is used to display the Post
 class PostCard extends Component {
@@ -10,13 +13,15 @@ class PostCard extends Component {
     source: "http://hello.com",
     origin: "http://hh.com",
     description: "",
-    contentType: "text/plain",
+    contentType: "",
     content: "",
-    visibility: "PUBLIC",
+    visibility: "",
     unlisted: false,
-    like_button_text:"click to like the post"
+    like_button_text: "click to like the post",
+    showComments: false,
   }
-  likepostClick= async()=>{
+
+  likepostClick = async () => {
     var author_url = this.props.post.author.id
     var author_data = author_url.split("/")
     var post_author_id = author_data[4]
@@ -25,23 +30,38 @@ class PostCard extends Component {
 
     var post_information = {
       "summary": "post",
-      "type":"like",
-      "author_like_ID":login_author_id,
-      "postID":post_id
+      "type": "like",
+      "author_like_ID": login_author_id,
+      "postID": post_id
     }
-    try{
-      let doc = await axios.post(`service/author/${post_author_id}/inbox/`,post_information)
-      if(doc.status == 200){
+    try {
+      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
+      if (doc.status === 200) {
         console.log(doc)
-        this.setState({like_button_text :"you have liked!"});
-
+        this.setState({ like_button_text: "you have liked!" });
       }
-
-    }catch (err) {
+    } catch (err) {
       console.log(err.response.status)
     }
+  }
 
-    
+  renderPostContent = () => {
+    const { contentType } = this.props.post;
+    switch (contentType) {
+      case "text/markdown":
+        return <ReactMarkDown>{this.props.post.content}</ReactMarkDown>;
+      default:
+        return <p>{this.props.post.content}</p>
+    }
+  }
+
+  getComments = () => {
+
+  }
+
+  handleShowComments = () => {
+    const { showComments } = this.state;
+    this.setState({ showComments: !showComments })
   }
 
   deletepostClick=async()=>{
@@ -65,17 +85,39 @@ class PostCard extends Component {
     }
   }
 
+  
+
   render() {
+    // console.log("this.props.post.postID:", this.props.post.postID);
     return (
       <div style={{ border: "solid 1px grey" }}>
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
-        <p>Content: {this.props.post.content}</p>
-         <button class="MuiButtonBase-root MuiButton-root MuiButton-outlined btn MuiButton-outlinedPrimary" 
-         tabindex="0" type="button" onClick = {this.likepostClick}>{this.state.like_button_text}</button> 
-         <button >click to edit the post</button>
-         <button class="MuiButtonBase-root MuiButton-root MuiButton-outlined btn MuiButton-outlinedPrimary" 
-         tabindex="0" type="button" onClick = {this.deletepostClick}>click to delete the post</button>
+        Content: {this.renderPostContent()}
+        <Button color="primary" onClick = {this.likepostClick}>{this.state.like_button_text}</Button> 
+        <button >click to edit the post</button>
+        <Button  color="primary" onClick = {this.deletepostClick}>click to delete the post</Button>
+        <Button color="primary" onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+        
+        <br />
+        {
+          this.state.showComments ?
+            <div>
+              <CommentForm postID={this.props.post.postID} />
+              {
+                this.props.post.comment_list.map((comment, index) => {
+                  return (
+                    <div key={index}>
+                      <CommentCard content={comment} />
+                    </div>
+                  );
+                })
+              }
+            </div>
+            :
+            null
+        }
+
       </div>
     )
   }

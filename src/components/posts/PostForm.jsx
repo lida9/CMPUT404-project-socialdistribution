@@ -18,7 +18,6 @@ class PostForm extends Component {
   }
 
   componentDidMount = () => {
-    console.log("authorID in PostForm (componentDidMount): ", this.props.authorID);
   }
 
   handleShow = () => {
@@ -33,8 +32,8 @@ class PostForm extends Component {
     for (let follower of followers) {
       // send to follower's inbox
       let splitUrl = follower.id.split("/");
-      let followerID = splitUrl[splitUrl.length-1];
-      let data = {"type":"post", "postID":postID};
+      let followerID = splitUrl[splitUrl.length - 1];
+      let data = { "type": "post", "postID": postID };
       axios.post(`service/author/${followerID}/inbox/`, data);
     }
   }
@@ -50,14 +49,14 @@ class PostForm extends Component {
       visibility,
       unlisted } = this.state;
 
-    const { authorID } = this.props.authorID;
+    const { authorID } = this.props;
     if (title && description && content) {
       try {
-        var res = await axios.post(`service/author/${authorID}/posts/`, { title, source, origin, description, contentType, content, visibility, unlisted });
+        var res = await axios.post(`service/author/${authorID.authorID}/posts/`, { title, source, origin, description, contentType, content, visibility, unlisted });
         this.setState({ show: false });
         // window.location = "/aboutme";
         this.props.getPosts();
-        this.sendToFollowers(authorID, res.data.postID);
+        this.sendToFollowers(authorID.authorID, res.data.postID);
       } catch (err) {
         console.log(err.message);
       }
@@ -111,6 +110,19 @@ class PostForm extends Component {
                       value={content}
                       onChange={(e) => this.setState({ content: e.target.value })}
                     /><br />
+
+                    <label>Content Type:</label>
+                    <select onChange={(e) => { this.setState({ contentType: e.target.value }) }}>
+                      <option value="text/plain">text/plain</option>
+                      <option value="text/markdown">text/markdown</option>
+                    </select>
+
+                    <label>Visibility:</label>
+                    <select onChange={(e) => { this.setState({ visibility: e.target.value }) }}>
+                      <option value="PUBLIC">PUBLIC</option>
+                      <option value="FRIEND">FRIEND</option>
+                    </select>
+
                     <Button
                       id="post-btn"
                       style={{ marginTop: 15 }}
