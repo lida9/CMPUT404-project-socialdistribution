@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Button } from "@material-ui/core"
 import ReactMarkDown from "react-markdown";
+import CommentCard from "../comments/CommentCard";
+import CommentForm from "../comments/CommentForm";
 import "../../styles/postCard.css";
 
 // This component is used to display the Post
@@ -16,14 +18,17 @@ class PostCard extends Component {
     content: "",
     visibility: "PUBLIC",
     unlisted: false,
-    like_button_text:"like"
+    like_button_text:"like",
+    showComments: false,
+    comments: []
   }
-  likepostClick= async()=>{
-    var author_url = this.props.post.author.id
-    var author_data = author_url.split("/")
-    var post_author_id = author_data[4]
-    var login_author_id = this.props.authorID.authorID
-    var post_id = this.props.post.postID
+
+  likepostClick = async () =>{
+    var author_url = this.props.post.author.id;
+    var author_data = author_url.split("/");
+    var post_author_id = author_data[4];
+    var login_author_id = this.props.authorID.authorID;
+    var post_id = this.props.post.postID;
 
     var post_information = {
       "summary": "post",
@@ -55,6 +60,25 @@ class PostCard extends Component {
     }
   }
 
+  getComments = async (page=1) => {
+    try {
+      const post = this.props.post;
+      const res = await axios.get(`service/author/${post.author.authorID}/posts/${post.postID}/comments/`, 
+        { params: { page: page } });
+      this.setState({ comments: res.data.comments });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  handleShowComments = () => {
+    const { showComments } = this.state;
+    if (this.state.showComments === false) {
+      this.getComments();
+    }
+    this.setState({ showComments: !showComments })
+  }
+
   render() {
     return (
       <div style={{ border: "solid 1px grey" }}>
@@ -62,7 +86,25 @@ class PostCard extends Component {
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-         <Button color="primary" variant="outlined" className={"postCardButton"} onClick={this.likepostClick}>{this.state.like_button_text}</Button>
+        <Button color="primary" variant="outlined" className={"postCardButton"} onClick={this.likepostClick}>{this.state.like_button_text}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+        {
+          this.state.showComments ?
+          <div>
+            <CommentForm postID={this.props.post.postID} location={"/"}/>
+            {
+              this.state.comments.map((comment, index) => {
+                return (
+                  <div key={index}>
+                    <CommentCard content={comment} />
+                  </div>
+                );
+              })
+            }
+          </div>
+          :
+          null
+        }
       </div>
     )
   }

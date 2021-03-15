@@ -10,11 +10,11 @@ class FollowCard extends Component {
     }
 
     accept = async() => {
-        var author_url = this.props.like.object.id
+        var author_url = this.props.follow.object.id
         var author_data = author_url.split("/")
         var author_id = author_data[4]
         
-        var follower_url = this.props.like.actor.id
+        var follower_url = this.props.follow.actor.id
         var follower_data = follower_url.split("/")
         var follower_id = follower_data[4]
 
@@ -32,11 +32,11 @@ class FollowCard extends Component {
     }
 
     reject = async() => {
-        var author_url = this.props.like.object.id
+        var author_url = this.props.follow.object.id
         var author_data = author_url.split("/")
         var author_id = author_data[4]
 
-        var follower_url = this.props.like.actor.id
+        var follower_url = this.props.follow.actor.id
         var follower_data = follower_url.split("/")
         var follower_id = follower_data[4]
 
@@ -56,7 +56,7 @@ class FollowCard extends Component {
     render() {
         return (
             <div id='follow-object' style={{ border: "solid 1px grey" }}>
-                {this.props.like.summary}
+                {this.props.follow.summary}
                 {
                   this.state.clicked === null ?
                   <div class="buttonRight">
