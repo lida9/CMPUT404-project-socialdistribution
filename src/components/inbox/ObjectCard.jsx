@@ -12,7 +12,7 @@ class ObjectCard extends Component {
     } else if (this.props.item.type === "like") {
       return <LikeCard like={this.props.item}/>
     } else if (this.props.item.type === "Follow") {
-      return <FollowCard like={this.props.item}/>
+      return <FollowCard follow={this.props.item}/>
     }
   }
 

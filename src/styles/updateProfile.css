@@ -13,3 +13,7 @@
 #update-btn {
   margin: 10px;
 }
+
+#update-password {
+  -webkit-text-security: disc;
+}
