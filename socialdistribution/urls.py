@@ -14,6 +14,7 @@ urlpatterns = [
     path('service/author/<str:authorID>/', author_view.author_detail),
 
     # post
+    path('service/allposts/', post_view.all_public_posts),
     path('service/author/<str:authorID>/posts/', post_view.post_view),
     path('service/author/<str:authorID>/posts/<uuid:postID>/', post_view.post_detail_view),
 
