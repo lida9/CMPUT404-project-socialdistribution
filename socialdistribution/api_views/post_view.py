@@ -76,9 +76,13 @@ def post_detail_view(request, authorID, postID):
             return Response({'message': "delete successful!"}, status=status.HTTP_200_OK)
         else:
             return Response({'message':"delete was unsuccessful"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)     
-        
-        
 
 
-        
-
+@api_view(['GET'])  
+def all_public_posts(request):
+    # get all public posts (paginated)
+    paginator = PostPagination()
+    posts = Post.objects.filter(visibility="PUBLIC").order_by('-published')
+    paginated = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(paginated, many=True)
+    return paginator.get_paginated_response(serializer.data)
