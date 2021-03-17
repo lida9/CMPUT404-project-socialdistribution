@@ -28,8 +28,8 @@ class PostForm extends Component {
 
   onImageChange = event => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({img: event.target.files[0]}, () => {
-        this.setState({imagePreview: URL.createObjectURL(this.state.img)});
+      this.setState({ img: event.target.files[0] }, () => {
+        this.setState({ imagePreview: URL.createObjectURL(this.state.img) });
       })
     }
   };
@@ -106,25 +106,25 @@ class PostForm extends Component {
         /><br />
         {
           contentType === "text/plain" || contentType === "text/markdown" ?
-          <div>
-            <TextField
-            style={{ width: 350 }}
-            id="post-content"
-            label="Content"
-            multiline
-            rows={5}
-            value={content}
-            onChange={(e) => this.setState({ content: e.target.value })}
-            /><br />
-          </div>
-          :
-          <div>
-            <Button color="primary" onClick={this.showOpenFileDlg}>Choose Image</Button>
-            <br/>
-            <input type="file" ref={this.chooseFile} onChange={this.onImageChange} style={{ display: 'none' }}
-              accept="image/png, image/jpeg" />
-            {this.state.imagePreview ? <div><img class="imagePreview" src={this.state.imagePreview} /></div> : null}
-          </div>
+            <div>
+              <TextField
+                style={{ width: 350 }}
+                id="post-content"
+                label="Content"
+                multiline
+                rows={5}
+                value={content}
+                onChange={(e) => this.setState({ content: e.target.value })}
+              /><br />
+            </div>
+            :
+            <div>
+              <Button color="primary" onClick={this.showOpenFileDlg}>Choose Image</Button>
+              <br />
+              <input type="file" ref={this.chooseFile} onChange={this.onImageChange} style={{ display: 'none' }}
+                accept="image/png, image/jpeg" />
+              {this.state.imagePreview ? <div><img className="imagePreview" src={this.state.imagePreview} /></div> : null}
+            </div>
         }
         <label>Content Type:</label>
         <select onChange={(e) => { this.setState({ contentType: e.target.value }) }}>

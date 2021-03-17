@@ -25,33 +25,33 @@ class PostCard extends Component {
   }
 
   likepostClick = async () => {
-    
-      var author_url = this.props.post.author.id
-      var author_data = author_url.split("/")
-      var post_author_id = author_data[4]
-      var login_author_id = this.props.authorID.authorID
-      var post_id = this.props.post.postID
-  
-      var post_information = {
-        "summary": "post",
-        "type": "like",
-        "author_like_ID": login_author_id,
-        "postID": post_id
+
+    var author_url = this.props.post.author.id
+    var author_data = author_url.split("/")
+    var post_author_id = author_data[4]
+    var login_author_id = this.props.authorID.authorID
+    var post_id = this.props.post.postID
+
+    var post_information = {
+      "summary": "post",
+      "type": "like",
+      "author_like_ID": login_author_id,
+      "postID": post_id
+    }
+    try {
+      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
+      if (doc.status === 200) {
+        this.setCookie("click", post_id);
+        this.disabled = true;
       }
-      try {
-        let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
-        if (doc.status === 200) {
-          this.setCookie("click",post_id);
-          this.disabled = true;
-        }
-      } catch (err) {
-        console.log(err.response.status)
-      }
+    } catch (err) {
+      console.log(err.response.status)
+    }
   }
   //set Cookie and check if clicked if referenced from 
   //https://stackoverflow.com/questions/22279372/javascript-for-keeping-buttons-disabled-even-after-refreshing
   //author: Gaurang Tandon
-   setCookie = (name, post_id) => {
+  setCookie = (name, post_id) => {
     // Set cookie to `namevalue;`
     // Won't overwrite existing values with different names
     var insert_array = name + "=" + post_id + '==';
@@ -59,22 +59,22 @@ class PostCard extends Component {
     // document.cookie += insert_array;
   }
 
-  checkIfClicked=() => {
+  checkIfClicked = () => {
     // Split by `;`
-    
+
     var cookie = document.cookie.split("==");
     // iterate over cookie array
     var posts = {};
-    for(var i  = 0; i < cookie.length; i++){
+    for (var i = 0; i < cookie.length; i++) {
       var c = cookie[i];
       // if it contains string "click"
-      
-      if(/click/.test(c)){
+
+      if (/click/.test(c)) {
         c = c.split("=");
         var name = c[0];
         var post_id = c[1];
         posts[post_id] = name;
-        
+
       }
 
     }
@@ -93,7 +93,7 @@ class PostCard extends Component {
         return <ReactMarkDown>{this.props.post.content}</ReactMarkDown>;
       case "image/png;base64":
       case "image/jpeg;base64":
-        return <div><img class="imagePreview" src={this.props.post.content} alt="Unavailable" /></div>
+        return <div><img className="imagePreview" src={this.props.post.content} alt="Unavailable" /></div>
       default:
         return <p>{this.props.post.content}</p>
     }
@@ -130,19 +130,19 @@ class PostCard extends Component {
   render() {
     // console.log("this.props.post.postID:", this.props.post.postID);
     var clicked_posts = this.checkIfClicked();
-    for(var key in clicked_posts){
-      if (key === this.props.post.postID){
+    for (var key in clicked_posts) {
+      if (key === this.props.post.postID) {
         var clicked = true;
       }
     }
-    
+
     // console.log(this.props.post);
     return (
       <div style={{ border: "solid 1px grey" }}>
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick } disabled={clicked=== true}>{this.state.like_button_text}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick} disabled={clicked === true}>{this.state.like_button_text}</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.ShowEdit}>edit post</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.deletepostClick}>Delete</Button>
@@ -151,7 +151,7 @@ class PostCard extends Component {
         {
           this.state.showComments ?
             <div>
-              <CommentForm postID={this.props.post.postID} location={"/aboutme"}/>
+              <CommentForm postID={this.props.post.postID} location={"/aboutme"} />
               {
                 this.props.post.comment_list.map((comment, index) => {
                   return (

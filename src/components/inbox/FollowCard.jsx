@@ -19,7 +19,7 @@ class FollowCard extends Component {
         // document.cookie += insert_array;
     }
 
-    accept = async() => {
+    accept = async () => {
         var author_url = this.props.follow.object.id
         var author_data = author_url.split("/")
         var author_id = author_data[4]
@@ -32,17 +32,17 @@ class FollowCard extends Component {
             "type": "accept",
         }
         try {
-            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`,post_information)
+            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`, post_information)
             if (doc.status == 200) {
                 this.setCookie("accepted", author_id, follower_id);
-                this.setState({clicked: "Accepted"});
+                this.setState({ clicked: "Accepted" });
             }
         } catch (err) {
             console.log(err.response.status)
         }
     }
 
-    reject = async() => {
+    reject = async () => {
         var author_url = this.props.follow.object.id
         var author_data = author_url.split("/")
         var author_id = author_data[4]
@@ -55,10 +55,10 @@ class FollowCard extends Component {
             "type": "reject",
         }
         try {
-            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`,post_information)
+            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`, post_information)
             if (doc.status == 200) {
                 this.setCookie("rejected", author_id, follower_id);
-                this.setState({clicked: "Rejected"});
+                this.setState({ clicked: "Rejected" });
             }
         } catch (err) {
             console.log(err.response.status)
@@ -75,14 +75,14 @@ class FollowCard extends Component {
             if (c.includes("accepted")) {
                 c = c.split("=");
                 var name = c[0];
-                var id = c[1]+c[2];
+                var id = c[1] + c[2];
                 answeredRequests[id] = name;
             }
             // if it contains string "rejected"
             else if (c.includes("rejected")) {
                 c = c.split("=");
                 var name = c[0];
-                var id = c[1]+c[2];
+                var id = c[1] + c[2];
                 answeredRequests[id] = name;
             }
         }
@@ -103,12 +103,12 @@ class FollowCard extends Component {
             var follower_id = follower_data[4]
 
             for (var key in answeredRequests) {
-                if (key === author_id+follower_id) {
+                if (key === author_id + follower_id) {
                     if (answeredRequests[key] === "accepted") {
-                        this.setState({clicked: "Accepted"});
+                        this.setState({ clicked: "Accepted" });
                     }
                     else {
-                        this.setState({clicked: "Rejected"});
+                        this.setState({ clicked: "Rejected" });
                     }
                 }
             }
@@ -117,20 +117,20 @@ class FollowCard extends Component {
             <div id='follow-object' style={{ border: "solid 1px grey" }}>
                 {this.props.follow.summary}
                 {
-                  this.state.clicked === null ?
+                    this.state.clicked === null ?
 
-                  <div class="buttonRight">
-                  <Button color="primary" variant="outlined" onClick = {this.accept}>Accept</Button>
-                  <Button color="primary" variant="outlined" onClick = {this.reject}>Reject</Button>
-                  </div>
-                  :
-                  <div class="text">
-                    <p>{this.state.clicked}</p>
-                  </div>
+                        <div className="buttonRight">
+                            <Button color="primary" variant="outlined" onClick={this.accept}>Accept</Button>
+                            <Button color="primary" variant="outlined" onClick={this.reject}>Reject</Button>
+                        </div>
+                        :
+                        <div className="text">
+                            <p>{this.state.clicked}</p>
+                        </div>
                 }
             </div>
-    )
-  }
+        )
+    }
 }
 
 export default FollowCard;

@@ -14,7 +14,7 @@ class AllAuthors extends Component {
 
 
   componentDidMount = async () => {
-    const {authorID} = this.props;
+    const { authorID } = this.props;
     if (authorID) {
       const author = await axios.get(`service/author/${authorID.authorID}/`);
       const res = await axios.get("service/author/");
@@ -34,8 +34,12 @@ class AllAuthors extends Component {
         <div>
           {
             authors.length !== 0 ?
-            authors.map((author, index) => {
-                return <AuthorCard key={index} currentUser={currentUser} author={author} />
+              authors.map((author, index) => {
+                if (author.authorID !== this.props.authorID.authorID) {
+                  return <AuthorCard key={index} currentUser={currentUser} author={author} />;
+                } else {
+                  return null;
+                }
               })
               :
               null
