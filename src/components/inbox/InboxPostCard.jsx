@@ -18,12 +18,12 @@ class PostCard extends Component {
     content: "",
     visibility: "PUBLIC",
     unlisted: false,
-    like_button_text:"like",
+    like_button_text: "like",
     showComments: false,
     comments: []
   }
 
-  likepostClick = async () =>{
+  likepostClick = async () => {
     var author_url = this.props.post.author.id;
     var author_data = author_url.split("/");
     var post_author_id = author_data[4];
@@ -32,17 +32,17 @@ class PostCard extends Component {
 
     var post_information = {
       "summary": "post",
-      "type":"like",
-      "author_like_ID":login_author_id,
-      "postID":post_id,
+      "type": "like",
+      "author_like_ID": login_author_id,
+      "postID": post_id,
     }
-    try{
-      let doc = await axios.post(`service/author/${post_author_id}/inbox/`,post_information)
-      if(doc.status == 200){
+    try {
+      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
+      if (doc.status == 200) {
         console.log(doc)
-        this.setState({like_button_text :"you have liked!"});
+        this.setState({ like_button_text: "you have liked!" });
       }
-    }catch (err) {
+    } catch (err) {
       console.log(err.response.status)
     }
   }
@@ -54,16 +54,16 @@ class PostCard extends Component {
         return <ReactMarkDown>{this.props.post.content}</ReactMarkDown>;
       case "image/png;base64":
       case "image/jpeg;base64":
-        return <div><img class="imagePreview" src={this.props.post.content} alt="Unavailable" /></div>
+        return <div><img className="imagePreview" src={this.props.post.content} alt="Unavailable" /></div>
       default:
         return <p>{this.props.post.content}</p>
     }
   }
 
-  getComments = async (page=1) => {
+  getComments = async (page = 1) => {
     try {
       const post = this.props.post;
-      const res = await axios.get(`service/author/${post.author.authorID}/posts/${post.postID}/comments/`, 
+      const res = await axios.get(`service/author/${post.author.authorID}/posts/${post.postID}/comments/`,
         { params: { page: page } });
       this.setState({ comments: res.data.comments });
     } catch (e) {
@@ -90,20 +90,20 @@ class PostCard extends Component {
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
         {
           this.state.showComments ?
-          <div>
-            <CommentForm postID={this.props.post.postID} location={"/"}/>
-            {
-              this.state.comments.map((comment, index) => {
-                return (
-                  <div key={index}>
-                    <CommentCard content={comment} />
-                  </div>
-                );
-              })
-            }
-          </div>
-          :
-          null
+            <div>
+              <CommentForm postID={this.props.post.postID} location={"/"} />
+              {
+                this.state.comments.map((comment, index) => {
+                  return (
+                    <div key={index}>
+                      <CommentCard content={comment} />
+                    </div>
+                  );
+                })
+              }
+            </div>
+            :
+            null
         }
       </div>
     )
