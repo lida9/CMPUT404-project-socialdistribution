@@ -1,4 +1,17 @@
 #follow-object {
-  margin: autho;
-  padding: 20px;
+    margin: autho;
+    padding: 20px;
+}
+.buttonRight{
+    position: absolute;
+    right: 0;
+    display: inline-block;
+    margin-left: -10px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.text {
+    float: right;
+    margin-right: 10px;
 }

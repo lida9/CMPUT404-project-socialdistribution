@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { Component } from "react";
+import { Button } from "@material-ui/core"
 import "../styles/login.css";
 import { setCurrentUser } from '../redux/user/actions';
 import { connect } from 'react-redux'
@@ -53,7 +54,8 @@ class Login extends Component {
           value={password}
           onChange={(e) => this.setState({ password: e.target.value })}
         />
-        <button id="login-btn" onClick={this.handleLogin}>Login</button>
+        <Button id="login-btn" color="primary"
+              variant="outlined" onClick={this.handleLogin}>Login</Button>
       </div>
     )
   }

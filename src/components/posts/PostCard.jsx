@@ -5,6 +5,8 @@ import { Button } from "@material-ui/core"
 import ReactMarkDown from "react-markdown";
 import CommentCard from "../comments/CommentCard";
 import CommentForm from "../comments/CommentForm";
+import PostEditForm from "../posts/PostEditForm";
+import "../../styles/postCard.css";
 
 // This component is used to display the Post
 class PostCard extends Component {
@@ -17,8 +19,9 @@ class PostCard extends Component {
     content: "",
     visibility: "",
     unlisted: false,
-    like_button_text: "click to like the post",
+    like_button_text: "Like Post",
     showComments: false,
+    showEditForm: false,
   }
 
   likepostClick = async () => {
@@ -47,16 +50,21 @@ class PostCard extends Component {
 
   renderPostContent = () => {
     const { contentType } = this.props.post;
+    console.log(contentType);
     switch (contentType) {
       case "text/markdown":
         return <ReactMarkDown>{this.props.post.content}</ReactMarkDown>;
+      case "image/png;base64":
+      case "image/jpeg;base64":
+        return <div><img class="imagePreview" src={this.props.post.content} alt="Unavailable" /></div>
       default:
         return <p>{this.props.post.content}</p>
     }
   }
 
-  getComments = () => {
-
+  ShowEdit = () => {
+    const { showEditForm } = this.state;
+    this.setState({ showEditForm: !showEditForm });
   }
 
   handleShowComments = () => {
@@ -64,28 +72,24 @@ class PostCard extends Component {
     this.setState({ showComments: !showComments })
   }
 
-  deletepostClick=async()=>{
+  deletepostClick = async () => {
     var login_author_id = this.props.authorID.authorID
     var post_author_id = this.props.post.authorID
     var post_id = this.props.post.postID
-    if (login_author_id !== post_author_id){
+    if (login_author_id !== post_author_id) {
       window.alert("you cannot delete this post")
-    }else{
-      try{
+    } else {
+      try {
         let doc = await axios.delete(`service/author/${post_author_id}/posts/${post_id}/`)
-        if(doc.status === 200){
+        if (doc.status === 200) {
           console.log(doc)
           window.location = '/aboutme'
-  
         }
-  
-      }catch (err) {
+      } catch (err) {
         console.log(err.response.status)
       }
     }
   }
-
-  
 
   render() {
     // console.log("this.props.post.postID:", this.props.post.postID);
@@ -94,11 +98,11 @@ class PostCard extends Component {
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-        <Button color="primary" onClick = {this.likepostClick}>{this.state.like_button_text}</Button> 
-        <button >click to edit the post</button>
-        <Button  color="primary" onClick = {this.deletepostClick}>click to delete the post</Button>
-        <Button color="primary" onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
-        
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick}>{this.state.like_button_text}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.ShowEdit}>edit post</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.deletepostClick}>Delete</Button>
+
         <br />
         {
           this.state.showComments ?
@@ -116,6 +120,9 @@ class PostCard extends Component {
             </div>
             :
             null
+        }
+        {
+          this.state.showEditForm ? <PostEditForm postID={this.props.post.postID} /> : null
         }
 
       </div>

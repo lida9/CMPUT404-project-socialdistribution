@@ -7,18 +7,35 @@ See project.org (plain-text/org-mode) for a description of the project.
 
 Make a distributed social network!
 
+## Heroku Deployed App - https://cmput-404-socialdistribution.herokuapp.com/
+
 ## Documentation
 [API Documentation](https://app.swaggerhub.com/apis-docs/lida9/SocialDistribution/1.0.0-oas3)
 
-## Install backend dependencies
-`$ pip3 install -r requirements.txt`
+## Running frontend
+```
+# install dependencies
+npm install
 
-## Run Tests
+# run app
+npm start
+```
+
+## Running backend
+```
+# install dependencies
+pip3 install -r requirements.txt
+
+# run backend
+python3 manage.py runserver
+```
+
+## Running Tests
 Run all backend tests  
-`$ python3 manage.py test socialdistribution.tests`
+`python3 manage.py test socialdistribution.tests`
 
 Run the tests in a file  
-`$ python3 manage.py test socialdistribution.tests.file_name`
+`python3 manage.py test socialdistribution.tests.file_name`
 
 Contributors / Licensing
 ========================

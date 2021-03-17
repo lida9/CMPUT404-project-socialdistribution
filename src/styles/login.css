@@ -18,20 +18,10 @@
 }
 
 #login-btn {
-  width: 100px;
-  height: 50px;
-  font-size: 20px;
-  font-family: cursive;
-  border: none;
-  border-radius: 2px;
   display: block;
-  background: #4169E1;
-  color: aliceblue;
   margin: 30px auto;
-}
-
-#login-btn:hover {
-  font-style: italic;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 #login-btn:focus{
