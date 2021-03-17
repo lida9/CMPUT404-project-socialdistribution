@@ -23,10 +23,11 @@ class Navbar extends Component {
 
             <li id="nav-item-logout" onClick={() => {
               this.props.setCurrentUser(null);
-              localStorage.removeItem("state")
+              localStorage.removeItem("state");
             }}><a href="/service/author/logout/">Log out</a> </li>
             <li id="nav-item-3"> <a href="/aboutme">Me</a> </li>
             <li id="search-icon"> <a href="/authors"><i className="fas fa-search"></i></a> </li>
+            <li id="public-posts"> <a href="#!"> <i className="fas fa-globe"></i> </a> </li>
           </div>
         );
     }
