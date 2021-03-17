@@ -1,7 +1,6 @@
 import React from 'react';
 import '../../styles/userHeader.css';
 import Avatar from '@material-ui/core/Avatar';
-import { Button } from "@material-ui/core";
 
 
 const UserHeader = props => {
@@ -15,7 +14,6 @@ const UserHeader = props => {
       <hr />
       <div>
         <Avatar id="user-avatar">{props.currentUser.displayName.slice(0, 1).toUpperCase()}</Avatar>
-        <Button >click to add friend</Button>
         <div id="user-info">
           <h1>Username: {props.currentUser.displayName} </h1>
           <h2>GitHub: {props.currentUser.github}</h2>
