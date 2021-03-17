@@ -2,8 +2,12 @@ import React from 'react';
 import '../../styles/userHeader.css';
 import Avatar from '@material-ui/core/Avatar';
 
+
 const UserHeader = props => {
   // console.log("currentUser (UserHeader): ", props.currentUser);
+
+
+
   return (
     <div id="user-header">
       <h1>Welcome!</h1>
@@ -17,6 +21,9 @@ const UserHeader = props => {
       </div>
     </div>
   )
+
+
+  
 }
 
 export default UserHeader
