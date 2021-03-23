@@ -18,11 +18,18 @@ def inbox_detail(request, authorID):
 
         if content_type == 'post':
             postID = request.data['postID']
-            post = Post.objects.get(postID=postID)
-            item_serializer = PostSerializer(post)
-
+            post_authorID = request.data['authorID']
+            # check if the post if from remote server
+            if Author.objects.filter(authorID=post_authorID).exists():
+                # local author
+                post = Post.objects.get(postID=postID)
+                item_serializer = PostSerializer(post)
+                data = item_serializer.data
+            else:
+                # remote author
+                data = {"type":"post", "postID":postID, "authorID":post_authorID}
             inbox, _ = Inbox.objects.get_or_create(authorID=authorID)
-            inbox.items.insert(0, item_serializer.data) # append to items list
+            inbox.items.insert(0, data) # append to items list
             inbox.save()
             return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
 

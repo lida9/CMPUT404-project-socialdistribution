@@ -67,7 +67,7 @@ class PostForm extends Component {
       // send to author's inbox
       let splitUrl = author.id.split("/");
       let ID = splitUrl[splitUrl.length - 1];
-      let data = { "type": "post", "postID": postID };
+      let data = { "type": "post", "postID": postID, "authorID": authorID};
       axios.post(`service/author/${ID}/inbox/`, data);
     }
   }
