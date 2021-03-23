@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import AboutMe from './pages/AboutMe';
 import UploadImage from './pages/UploadImage';
 import AllAuthors from './pages/AllAuthors';
+import PublicPost from './pages/PublicPosts';
 import NotFound from './components/errors/NotFound';
 import ErrorBoundary from './components/errors/ErrorBoundary';
 
@@ -25,6 +26,7 @@ class App extends Component {
               <Route exact path="/register" component={Register} />
               <Route exact path="/image" component={UploadImage} />
               <Route exact path="/authors" component={AllAuthors} />
+              <Route exact path="/post/public" component={PublicPost} />
               <Route component={NotFound} />
             </Switch>
           </Suspense>

@@ -15,8 +15,8 @@ class UploadImage extends Component {
 
   onImageChange = event => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({img: event.target.files[0]}, () => {
-        this.setState({imagePreview: URL.createObjectURL(this.state.img)});
+      this.setState({ img: event.target.files[0] }, () => {
+        this.setState({ imagePreview: URL.createObjectURL(this.state.img) });
       })
     }
   };
@@ -86,7 +86,7 @@ class UploadImage extends Component {
     return (
       <div>
         <div>
-          <img src={this.state.imagePreview} />
+          <img src={this.state.imagePreview} alt="" />
           <h1>Select Image</h1>
           <button onClick={this.showOpenFileDlg}>Choose Image</button>
           <input type="file" ref={this.chooseFile} onChange={this.onImageChange} style={{ display: 'none' }}
