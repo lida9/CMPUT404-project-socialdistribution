@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PostCard from '../components/posts/PostCard';
+import PostCard from '../components/publicPosts/PostCard';
 
 class PublicPosts extends Component {
   state = {

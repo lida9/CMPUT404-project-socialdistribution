@@ -27,7 +27,7 @@ class Navbar extends Component {
             }}><a href="/service/author/logout/"><i className="fas fa-sign-out-alt"></i></a> </li>
             <li id="nav-item-3"> <a href="/aboutme"><i className="fas fa-user-circle"></i></a> </li>
             <li id="search-icon"> <a href="/authors"><i className="fas fa-search"></i></a> </li>
-            <li id="public-posts"> <a href="/post/public"> <i className="fas fa-globe"></i> </a> </li>
+            <li id="public-posts"> <a href="/public"> <i className="fas fa-globe"></i> </a> </li>
           </div>
         );
     }

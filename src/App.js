@@ -26,7 +26,7 @@ class App extends Component {
               <Route exact path="/register" component={Register} />
               <Route exact path="/authors" component={AllAuthors} />
               <Route exact path="/author/followerfriends" component={AllFollowers} />
-              <Route exact path="/post/public" component={PublicPost} />
+              <Route exact path="/public" component={PublicPost} />
               <Route component={NotFound} />
             </Switch>
           </Suspense>
