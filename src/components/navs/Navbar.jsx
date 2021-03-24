@@ -13,8 +13,8 @@ class Navbar extends Component {
       case null:
         return (
           <div>
-            <li id="nav-item-signup"> <a href="/register">Sign up</a> </li>
-            <li id="nav-item-login"> <a href="/login">Log in</a> </li>
+            <li id="nav-item-signup"> <a href="/register"><i className="fas fa-sign-in-alt"></i></a> </li>
+            <li id="nav-item-login"> <a href="/login"><i className="fas fa-user-lock"></i></a> </li>
           </div>
         );
       default:
@@ -24,8 +24,8 @@ class Navbar extends Component {
             <li id="nav-item-logout" onClick={() => {
               this.props.setCurrentUser(null);
               localStorage.removeItem("state")
-            }}><a href="/service/author/logout/">Log out</a> </li>
-            <li id="nav-item-3"> <a href="/aboutme">Me</a> </li>
+            }}><a href="/service/author/logout/"><i className="fas fa-sign-out-alt"></i></a> </li>
+            <li id="nav-item-3"> <a href="/aboutme"><i className="fas fa-user-circle"></i></a> </li>
             <li id="search-icon"> <a href="/authors"><i className="fas fa-search"></i></a> </li>
             <li id="public-posts"> <a href="/post/public"> <i className="fas fa-globe"></i> </a> </li>
           </div>

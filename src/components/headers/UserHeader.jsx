@@ -4,10 +4,6 @@ import Avatar from '@material-ui/core/Avatar';
 
 
 const UserHeader = props => {
-  // console.log("currentUser (UserHeader): ", props.currentUser);
-
-
-
   return (
     <div id="user-header">
       <h1>Welcome!</h1>
@@ -18,12 +14,9 @@ const UserHeader = props => {
           <h1>Username: {props.currentUser.displayName} </h1>
           <h2>GitHub: {props.currentUser.github}</h2>
         </div>
+
       </div>
     </div>
-  )
-
-
-  
+  );
 }
-
-export default UserHeader
+export default UserHeader;
