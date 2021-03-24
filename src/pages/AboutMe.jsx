@@ -35,13 +35,16 @@ class AboutMe extends Component {
   render() {
     const { currentUser, userPosts } = this.state;
     return (
-      <div>
+      <>
         {
           currentUser !== null ? <UserHeader currentUser={currentUser} /> : null
         }
         <UpdateProfileForm />
         <PostForm getPosts={this.getPosts} />
         <hr />
+        <div style={{ margin: 10 }}>
+          {currentUser !== null ? <a href="/author/followerfriends" title="follower"><i className="fas fa-user-friends fa-2x"></i></a> : null}
+        </div>
         <div>
           {
             userPosts.length !== 0 ?
@@ -52,7 +55,7 @@ class AboutMe extends Component {
               null
           }
         </div>
-      </div>
+      </>
     )
   }
 }
