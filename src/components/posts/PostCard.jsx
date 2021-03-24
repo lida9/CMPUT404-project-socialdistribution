@@ -135,6 +135,20 @@ class PostCard extends Component {
         var clicked = true;
       }
     }
+    var login_id = this.props.post.author.authorID;
+    var author_id = this.props.authorID.authorID;
+    
+    if (this.props.post.visibility === "FRIEND"){
+      if (login_id === author_id){
+        var visible = true;
+      }else{
+        var visible = false;
+      }
+      
+
+    }else{
+      var visible = true;
+    }
 
     // console.log(this.props.post);
     return (
@@ -154,10 +168,12 @@ class PostCard extends Component {
               <CommentForm postID={this.props.post.postID} location={"/aboutme"} />
               {
                 this.props.post.comment_list.map((comment, index) => {
+
                   return (
+                    visible? 
                     <div key={index}>
                       <CommentCard content={comment} />
-                    </div>
+                    </div>:null
                   );
                 })
               }
