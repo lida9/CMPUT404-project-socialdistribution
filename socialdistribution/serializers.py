@@ -23,7 +23,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source='get_type', required=False)
     id = serializers.CharField(source='get_id', required=False)
-    host = serializers.URLField(source='get_host', required=False)
+    host = serializers.CharField(source='get_host', required=False)
     displayName = serializers.CharField(source='username', required=False)
     url = serializers.CharField(source='get_id', required=False)
 
@@ -189,6 +189,12 @@ class LikedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Liked
         fields = ['type','authorID','items']
+
+class NodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Node
+        fields = ['host']
 
 # class UUIDEncoder(json.JSONEncoder):
 #     def default(self, obj):
