@@ -11,7 +11,6 @@ class PublicPosts extends Component {
   componentDidMount = async () => {
     if (this.props.authorID) {
       const doc = await axios.get("/service/allposts/")
-      console.log("All public posts: ", doc.data);
       this.setState({ allposts: doc.data.posts })
     } else {
       alert("Log in to see more post")
@@ -29,7 +28,7 @@ class PublicPosts extends Component {
             allposts.length !== 0 ?
               allposts.map((post, index) => {
                 return <PostCard key={index} post={post} />
-              }) : null
+              }) : <h4 style={{ padding: 10 }}>No post yet</h4>
           }
         </div>
       </>
