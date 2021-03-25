@@ -59,41 +59,31 @@ class Post(models.Model):
         return "post"
 
 # partially from https://briancaffey.github.io/2017/07/19/different-ways-to-build-friend-models-in-django.html/
+# class Follow(models.Model):
+#     users = models.ManyToManyField(Author)
+#     current_user = models.ForeignKey(Author, related_name="owner", null=True, on_delete=models.CASCADE)
+
+#     @classmethod
+#     def follow(cls, current_user, new_friend):
+#         friend, created = cls.objects.get_or_create(
+#             current_user = current_user
+#         )
+#         friend.users.add(new_friend)
+
+#     @classmethod
+#     def unfollow(cls, current_user, new_friend):
+#         friend, created = cls.objects.get_or_create(
+#             current_user = current_user
+#         )
+#         friend.users.remove(new_friend)
+
+#     def __str__(self):
+#         return str(self.current_user)
+
 class Follow(models.Model):
-    users = models.ManyToManyField(Author)
-    current_user = models.ForeignKey(Author, related_name="owner", null=True, on_delete=models.CASCADE)
-
-    @classmethod
-    def follow(cls, current_user, new_friend):
-        friend, created = cls.objects.get_or_create(
-            current_user = current_user
-        )
-        friend.users.add(new_friend)
-
-    @classmethod
-    def unfollow(cls, current_user, new_friend):
-        friend, created = cls.objects.get_or_create(
-            current_user = current_user
-        )
-        friend.users.remove(new_friend)
-
-    def __str__(self):
-        return str(self.current_user)
-
-# class FriendRequest(models.Model):
-#     authorID = models.CharField(max_length=40, unique=True)
-#     type = models.CharField(max_length=100, default="text/plain")
-#     summary = models.CharField(max_length=100, default="text/plain")
-#     new_follower_ID = models.CharField(max_length=40, primary_key=True)
-#
-#     def get_author(self):
-#         return self.authorID
-#
-#     def get_type(self):
-#         return "Follow"
-#
-#     def get_actor(self):
-#         return self.new_follower_ID
+    # author2 follows author1
+    author1 = models.CharField(max_length=50)
+    author2 = models.CharField(max_length=50)
 
 class Comment(models.Model):
     # model_type = models.CharField(max_length=10, default= "comment")

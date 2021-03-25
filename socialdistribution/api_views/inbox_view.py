@@ -10,7 +10,8 @@ import requests
 @api_view(['GET', 'POST', 'DELETE'])
 def inbox_detail(request, authorID):
     host = request.build_absolute_uri("/")
-    if host not in ["http://127.0.0.1:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]:
+    print(host)
+    if host not in ["http://127.0.0.1:8000/", "http://localhost:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]:
         # check valid node
         valid_nodes = get_valid_nodes()
         if host not in valid_nodes:
@@ -45,24 +46,31 @@ def inbox_detail(request, authorID):
             return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
 
         elif content_type == 'follow':
-            remote = False
-            author = get_object_or_404(Author, authorID=authorID)
+            # remote = False
+            # author = get_object_or_404(Author, authorID=authorID)
+
+            # new_follower_ID = request.data['new_follower_ID']
+            # try:
+            #     new_follower = Author.objects.get(authorID=new_follower_ID)
+            # except Author.DoesNotExist: # lookup in remote server
+            #     # todo
+            #     remote = True
+
+            # if not remote:
+            #     # append to follow database if needed
+            #     friend_object, created = Follow.objects.get_or_create(current_user=author)
+            #     if new_follower not in friend_object.users.all():
+            #         Follow.follow(author, new_follower)
+            # if remote: # todo
+            #     pass
 
             new_follower_ID = request.data['new_follower_ID']
-            try:
-                new_follower = Author.objects.get(authorID=new_follower_ID)
-            except Author.DoesNotExist: # lookup in remote server
-                # todo
-                remote = True
+            if not Follow.objects.filter(author1=authorID, author2=new_follower_ID).exists():
+                follow = Follow(author1=authorID, author2=new_follower_ID) # let new follower follow author
+                follow.save()
 
-            if not remote:
-                # append to follow database if needed
-                friend_object, created = Follow.objects.get_or_create(current_user=author)
-                if new_follower not in friend_object.users.all():
-                    Follow.follow(author, new_follower)
-            if remote: # todo
-                pass
-
+            new_follower = get_object_or_404(Author, authorID=new_follower_ID)
+            author = get_object_or_404(Author, authorID=authorID)
             actor_name = new_follower.username
             object_name = author.username
             summary = actor_name + " wants to follow " + object_name
@@ -129,11 +137,10 @@ def inbox_detail(request, authorID):
 def friendrequest(request, authorID, foreignAuthorID):
     type = request.data['type']
     if type == 'accept':
-        author = get_object_or_404(Author, authorID=authorID)
-        follower = get_object_or_404(Author, authorID=foreignAuthorID)
-        friend_object, created = Follow.objects.get_or_create(current_user=follower)
-        if author not in friend_object.users.all():
-            Follow.follow(follower, author)
+        # author will follow foreign author then they are friend
+        if not Follow.objects.filter(author1=foreignAuthorID, author2=authorID).exists():
+            follow = Follow(author1=foreignAuthorID, author2=authorID)
+            follow.save()
         return Response({'message':'Success!'}, status=status.HTTP_200_OK)
 
     elif type == 'reject':
