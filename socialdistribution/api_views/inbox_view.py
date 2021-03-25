@@ -34,13 +34,23 @@ def inbox_detail(request, authorID):
             return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
 
         elif content_type == 'follow':
-            new_follower_ID = request.data['new_follower_ID']
-            new_follower = get_object_or_404(Author, authorID=new_follower_ID)
+            remote = False
             author = get_object_or_404(Author, authorID=authorID)
-            # append to follow database if needed
-            friend_object, created = Follow.objects.get_or_create(current_user=author)
-            if new_follower not in friend_object.users.all():
-                Follow.follow(author, new_follower)
+
+            new_follower_ID = request.data['new_follower_ID']
+            try:
+                new_follower = Author.objects.get(authorID=new_follower_ID)
+            except Author.DoesNotExist: # lookup in remote server
+                # todo
+                remote = True
+
+            if not remote:
+                # append to follow database if needed
+                friend_object, created = Follow.objects.get_or_create(current_user=author)
+                if new_follower not in friend_object.users.all():
+                    Follow.follow(author, new_follower)
+            if remote: # todo
+                pass
 
             actor_name = new_follower.username
             object_name = author.username

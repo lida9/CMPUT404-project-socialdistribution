@@ -16,6 +16,18 @@ def follower_list(request, authorID): # GET: get a list of authors who are their
         followers.append(serializer.data)
     return Response({"type": "followers","items":followers}, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def following_list(request, authorID): # GET: get a list of authors who they are following
+    authors = Author.objects.all() # a list of all authors
+    current_user = Author.objects.get(authorID=authorID)
+    followings = []
+    for author in authors:
+        friend_object, created = Follow.objects.get_or_create(current_user=author) # all followers of this author
+        if current_user in friend_object.users.all(): # if current_user is a follower of this author
+            serializer = AuthorSerializer(author)
+            followings.append(serializer.data)
+    return Response({"type": "followings","items":followings}, status=status.HTTP_200_OK)
+
 
 @api_view(['GET', 'DELETE', 'PUT'])
 def follower(request, authorID, foreignAuthorID):
