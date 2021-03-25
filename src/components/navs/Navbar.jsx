@@ -13,8 +13,8 @@ class Navbar extends Component {
       case null:
         return (
           <div>
-            <li id="nav-item-signup"> <a href="/register"><i className="fas fa-sign-in-alt"></i></a> </li>
-            <li id="nav-item-login"> <a href="/login"><i className="fas fa-user-lock"></i></a> </li>
+            <li id="nav-item-signup"> <a href="/register">Register</a> </li>
+            <li id="nav-item-login"> <a href="/login">Login</a> </li>
           </div>
         );
       default:
