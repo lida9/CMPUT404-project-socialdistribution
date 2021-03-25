@@ -23,7 +23,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source='get_type', required=False)
     id = serializers.CharField(source='get_id', required=False)
-    host = serializers.URLField(source='get_host', required=False)
+    host = serializers.CharField(source='get_host', required=False)
     displayName = serializers.CharField(source='username', required=False)
     url = serializers.CharField(source='get_id', required=False)
 

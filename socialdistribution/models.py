@@ -16,7 +16,7 @@ class Author(AbstractUser):
     is_active = models.BooleanField(default=True)
 
     authorID = models.CharField(unique=True, default=uuid_hex, editable=False, max_length=40)
-    github = models.URLField(max_length=200, blank=True)
+    github = models.CharField(max_length=200, blank=True)
 
     USERNAME_FIELD = 'email' # use email to login
     REQUIRED_FIELDS = ['username']
