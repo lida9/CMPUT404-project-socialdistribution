@@ -80,6 +80,23 @@ class PostCard extends Component {
   }
 
   render() {
+    var login_id = this.props.post.author.authorID;
+    var author_id = this.props.authorID.authorID;
+    console.log(login_id);
+    console.log(author_id);
+
+    if (this.props.post.visibility === "FRIEND"){
+      if (login_id === author_id){
+        var visible = true;
+      }else{
+        var visible = false;
+      }
+      
+
+    }else{
+      var visible = true;
+    }
+
     return (
       <div style={{ border: "solid 1px grey" }}>
         <h1>Author: {this.props.post.author.displayName}</h1>
@@ -95,9 +112,10 @@ class PostCard extends Component {
               {
                 this.state.comments.map((comment, index) => {
                   return (
+                    visible? 
                     <div key={index}>
                       <CommentCard content={comment} />
-                    </div>
+                    </div>:null
                   );
                 })
               }
