@@ -14,40 +14,77 @@ class PostCard extends Component {
     source: "http://hello.com",
     origin: "http://hh.com",
     description: "",
-    contentType: "text/plain",
+    contentType: "",
     content: "",
-    visibility: "PUBLIC",
+    visibility: "",
     unlisted: false,
-    like_button_text: "like",
+    like_button_text: "Like Post",
     showComments: false,
-    comments: []
   }
 
   likepostClick = async () => {
-    var author_url = this.props.post.author.id;
-    var author_data = author_url.split("/");
-    var post_author_id = author_data[4];
-    var login_author_id = this.props.authorID.authorID;
-    var post_id = this.props.post.postID;
+
+    var author_url = this.props.post.author.id
+    var author_data = author_url.split("/")
+    var post_author_id = author_data[4]
+    var login_author_id = this.props.authorID.authorID
+    var post_id = this.props.post.postID
 
     var post_information = {
       "summary": "post",
       "type": "like",
       "author_like_ID": login_author_id,
-      "postID": post_id,
+      "postID": post_id
     }
     try {
       let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
-      if (doc.status == 200) {
-        console.log(doc)
-        this.setState({ like_button_text: "you have liked!" });
+      if (doc.status === 200) {
+        this.setCookie("click", post_id);
+        this.disabled = true;
       }
     } catch (err) {
       console.log(err.response.status)
     }
   }
+  //set Cookie and check if clicked if referenced from 
+  //https://stackoverflow.com/questions/22279372/javascript-for-keeping-buttons-disabled-even-after-refreshing
+  //author: Gaurang Tandon
+  setCookie = (name, post_id) => {
+    // Set cookie to `namevalue;`
+    // Won't overwrite existing values with different names
+    var insert_array = name + "=" + post_id + '==';
+    document.cookie += insert_array;
+    // document.cookie += insert_array;
+  }
+
+  checkIfClicked = () => {
+    // Split by `;`
+
+    var cookie = document.cookie.split("==");
+    // iterate over cookie array
+    var posts = {};
+    for (var i = 0; i < cookie.length; i++) {
+      var c = cookie[i];
+      // if it contains string "click"
+
+      if (/click/.test(c)) {
+        c = c.split("=");
+        var name = c[0];
+        var post_id = c[1];
+        posts[post_id] = name;
+
+      }
+
+    }
+    // cookie does not exist
+    return posts;
+  }
 
   renderPostContent = () => {
+    // var clicked = this.checkIfClicked();
+    // if (clicked === true){
+    //   this.props.state.like_button_text = "you have liked!";
+    // }
     const { contentType } = this.props.post;
     switch (contentType) {
       case "text/markdown":
@@ -60,31 +97,22 @@ class PostCard extends Component {
     }
   }
 
-  getComments = async (page = 1) => {
-    try {
-      const post = this.props.post;
-      const res = await axios.get(`service/author/${post.author.authorID}/posts/${post.postID}/comments/`,
-        { params: { page: page } });
-      this.setState({ comments: res.data.comments });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   handleShowComments = () => {
     const { showComments } = this.state;
-    if (this.state.showComments === false) {
-      this.getComments();
-    }
     this.setState({ showComments: !showComments })
   }
 
   render() {
+    // console.log("this.props.post.postID:", this.props.post.postID);
+    var clicked_posts = this.checkIfClicked();
+    for (var key in clicked_posts) {
+      if (key === this.props.post.postID) {
+        var clicked = true;
+      }
+    }
     var login_id = this.props.post.author.authorID;
     var author_id = this.props.authorID.authorID;
-    console.log(login_id);
-    console.log(author_id);
-
+    
     if (this.props.post.visibility === "FRIEND"){
       if (login_id === author_id){
         var visible = true;
@@ -97,20 +125,23 @@ class PostCard extends Component {
       var visible = true;
     }
 
+    // console.log(this.props.post);
     return (
       <div style={{ border: "solid 1px grey" }}>
-        <h1>Author: {this.props.post.author.displayName}</h1>
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick}>{this.state.like_button_text}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick} disabled={clicked === true}>{this.state.like_button_text}</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+      
+        <br />
         {
           this.state.showComments ?
             <div>
-              <CommentForm postID={this.props.post.postID} location={"/"} />
+              <CommentForm postID={this.props.post.postID} location={"/public"} />
               {
-                this.state.comments.map((comment, index) => {
+                this.props.post.comment_list.map((comment, index) => {
+
                   return (
                     visible? 
                     <div key={index}>
@@ -123,6 +154,7 @@ class PostCard extends Component {
             :
             null
         }
+
       </div>
     )
   }

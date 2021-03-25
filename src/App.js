@@ -5,9 +5,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AboutMe from './pages/AboutMe';
-import UploadImage from './pages/UploadImage';
 import AllAuthors from './pages/AllAuthors';
 import PublicPost from './pages/PublicPosts';
+import AllFollowers from './pages/AllFollowers';
 import NotFound from './components/errors/NotFound';
 import ErrorBoundary from './components/errors/ErrorBoundary';
 
@@ -24,9 +24,9 @@ class App extends Component {
               <Route exact path="/aboutme" component={AboutMe} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
-              <Route exact path="/image" component={UploadImage} />
               <Route exact path="/authors" component={AllAuthors} />
-              <Route exact path="/post/public" component={PublicPost} />
+              <Route exact path="/author/followerfriends" component={AllFollowers} />
+              <Route exact path="/public" component={PublicPost} />
               <Route component={NotFound} />
             </Switch>
           </Suspense>
