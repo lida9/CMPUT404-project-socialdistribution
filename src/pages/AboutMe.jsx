@@ -43,7 +43,7 @@ class AboutMe extends Component {
         <PostForm getPosts={this.getPosts} />
         <hr />
         <div style={{ margin: 10 }}>
-          {currentUser !== null ? <a href="/author/followerfriends" title="follower"><i className="fas fa-user-friends fa-2x"></i></a> : null}
+          {currentUser !== null ? <a href="/author/followers" title="follower"><i className="fas fa-user-friends fa-2x"></i></a> : null}
         </div>
         <div>
           {
