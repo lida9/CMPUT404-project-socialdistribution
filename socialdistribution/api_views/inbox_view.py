@@ -10,7 +10,8 @@ import requests
 @api_view(['GET', 'POST', 'DELETE'])
 def inbox_detail(request, authorID):
     host = request.build_absolute_uri("/")
-    if host not in ["http://127.0.0.1:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]:
+    print(host)
+    if host not in ["http://127.0.0.1:8000/", "http://localhost:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]:
         # check valid node
         valid_nodes = get_valid_nodes()
         if host not in valid_nodes:
