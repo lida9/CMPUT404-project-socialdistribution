@@ -161,3 +161,6 @@ class Liked(models.Model):
 
     def get_type(self):
         return "liked"
+
+class Node(models.Model):
+    host = models.CharField(max_length=150)

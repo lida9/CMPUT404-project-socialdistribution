@@ -190,6 +190,12 @@ class LikedSerializer(serializers.ModelSerializer):
         model = Liked
         fields = ['type','authorID','items']
 
+class NodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Node
+        fields = ['host']
+
 # class UUIDEncoder(json.JSONEncoder):
 #     def default(self, obj):
 #         if isinstance(obj, UUID):
