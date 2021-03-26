@@ -45,3 +45,20 @@ def get_followers_objects(authorID):
                 follower = find_remote_author_by_id(follower_ID)
                 followers.append(follower)
     return followers
+
+def get_followings_objects(authorID):
+    objects = Follow.objects.filter(author2=authorID) # all objects where author is a follower
+    objects_serializer = FollowSerializer(objects, many=True)
+    followings = []
+    for f in objects_serializer.data:
+        following_ID = f['author1']
+        try:
+            following_author = Author.objects.get(authorID=following_ID) # get the author being followed
+            serializer = AuthorSerializer(following_author)
+            followings.append(serializer.data)
+        except Author.DoesNotExist:
+            remote = get_list_ids()
+            if following_ID in remote: # the remote author being followed
+                following_author = find_remote_author_by_id(following_ID)
+                followings.append(following_author)
+    return followings

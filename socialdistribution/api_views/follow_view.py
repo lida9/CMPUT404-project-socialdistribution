@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import Author, Follow
 from socialdistribution.serializers import AuthorSerializer, FollowSerializer
-from .helper import get_followers_objects
+from .helper import get_followers_objects, get_followings_objects
 
 @api_view(['GET'])
 def follower_list(request, authorID): # GET: get a list of authors who are their followers
@@ -13,28 +13,7 @@ def follower_list(request, authorID): # GET: get a list of authors who are their
 
 @api_view(['GET'])
 def following_list(request, authorID): # GET: get a list of authors who they are following
-    # authors = Author.objects.all() # a list of all authors
-    # current_user = Author.objects.get(authorID=authorID)
-    # followings = []
-    # for author in authors:
-    #     friend_object, created = Follow.objects.get_or_create(current_user=author) # all followers of this author
-    #     if current_user in friend_object.users.all(): # if current_user is a follower of this author
-    #         serializer = AuthorSerializer(author)
-    #         followings.append(serializer.data)
-
-    objects = Follow.objects.filter(author2=authorID) # all objects where author is a follower
-    objects_serializer = FollowSerializer(objects, many=True)
-    followings = []
-    for f in objects_serializer.data:
-        try:
-            following_author = Author.objects.get(authorID=f['author1']) # get the author being followed
-            serializer = AuthorSerializer(following_author)
-            followings.append(serializer.data)
-        except Author.DoesNotExist:
-            # probably on remote server
-            # requests.get('') # get author data from remote server
-            print("remote")
-
+    followings = get_followings_objects(authorID)
     return Response({"type": "followings","items":followings}, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'DELETE', 'PUT'])
