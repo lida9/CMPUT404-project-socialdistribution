@@ -55,7 +55,7 @@ def inbox_detail(request, authorID):
                     if not Follow.objects.filter(author1=authorID, author2=new_follower_ID).exists():
                         follow = Follow(author1=authorID, author2=new_follower_ID)
                         follow.save()
-                        
+
                     author = get_object_or_404(Author, authorID=authorID)
                     object_name = author.username
 

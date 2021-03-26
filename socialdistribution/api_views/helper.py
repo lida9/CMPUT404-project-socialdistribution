@@ -41,7 +41,7 @@ def get_followers_objects(authorID):
             followers.append(serializer.data)
         except Author.DoesNotExist:
             remote = get_list_ids()
-            if new_follower_ID in remote: # the follower is remote
-                follower = find_remote_author_by_id(new_follower_ID)
+            if follower_ID in remote: # the follower is remote
+                follower = find_remote_author_by_id(follower_ID)
                 followers.append(follower)
     return followers
