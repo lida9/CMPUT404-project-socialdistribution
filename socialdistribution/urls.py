@@ -40,4 +40,7 @@ urlpatterns = [
     # like comment
     path('service/author/<str:author_write_article_ID>/posts/<uuid:postID>/comments/<uuid:commentID>/likes/',like_view.like_comment_view),
 
+    #get github activity as post
+    path('service/author/<str:authorID>/github/',post_view.git_view)
+
 ]

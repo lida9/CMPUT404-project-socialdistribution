@@ -7,7 +7,8 @@ from rest_framework import status
 from socialdistribution.models import Post, Author
 from socialdistribution.serializers import PostSerializer, AuthorSerializer
 from socialdistribution.pagination import PostPagination
-
+import requests
+import json
 @api_view(['GET', 'POST'])
 def post_view(request, authorID):
     if request.method == "GET":
@@ -86,3 +87,14 @@ def all_public_posts(request):
     paginated = paginator.paginate_queryset(posts, request)
     serializer = PostSerializer(paginated, many=True)
     return paginator.get_paginated_response(serializer.data)
+
+
+@api_view([ 'GET'])
+#get github activity
+def git_view(request,authorID):
+    if request.method == "GET":
+        author = get_object_or_404(Author,authorID = authorID)
+        username = author.github
+        url = 'https://api.github.com/users/'+ username + '/events'
+        git_msg = requests.get(url).json()
+        return Response(git_msg, status=status.HTTP_200_OK)
