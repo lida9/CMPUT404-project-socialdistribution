@@ -1,5 +1,6 @@
 from socialdistribution.models import Node, Author, Follow
 from socialdistribution.serializers import NodeSerializer, AuthorSerializer, FollowSerializer
+import requests
 
 # return a list of valid nodes(hosts)
 def get_valid_nodes():
@@ -22,5 +23,13 @@ def get_followers_objects(authorID):
         except Author.DoesNotExist:
             # probably on remote server
             print("remote")
-        
+
     return followers
+
+def get_list_ids():
+    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/').json()
+    ids = []
+    authors = req["items"]
+    for i in authors:
+        ids.append(i["id"])
+    return ids
