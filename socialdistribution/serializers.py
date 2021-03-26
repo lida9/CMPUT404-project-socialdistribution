@@ -23,7 +23,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source='get_type', required=False)
     id = serializers.CharField(source='get_id', required=False)
-    host = serializers.URLField(source='get_host', required=False)
+    host = serializers.CharField(source='get_host', required=False)
     displayName = serializers.CharField(source='username', required=False)
     url = serializers.CharField(source='get_id', required=False)
 
@@ -51,30 +51,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['type', 'title', 'id', 'authorID', 'postID', 'source', 'origin', 'description', 'contentType',
             'content', 'count', 'comments', 'comment_list','published', 'visibility', 'unlisted']
 
-# class FriendRequestSerializer(serializers.ModelSerializer):
-#     #summary = serializers.SerializerMethodField("get_summary",required=False)
-#     object = serializers.CharField(source='get_author',required=False) # the user being followed
-#     actor = serializers.CharField(source='get_actor',required=False) # the new follower
-#     type = serializers.CharField(source='get_type',required=False)
-#     """ terminology: Greg wants to follow Lara:
-#     Greg is the actor
-#     Lara is the object """
-#
-#     class Meta:
-#         model = FriendRequest
-#         fields = ['type', 'summary', 'actor', 'object']
-#
-#     def to_representation(self, instance):
-#         response = super(FriendRequestSerializer, self).to_representation(instance)
-#         actor = Author.objects.get(authorID = instance.new_follower_ID) # the new follower
-#         actor_serializer = AuthorSerializer(actor)
-#         object = Author.objects.get(authorID = instance.object) # the user being followed
-#         object_serializer = AuthorSerializer(object)
-#         del response['new_follower_ID']
-#         response['summary'] = actor.username + "wants to follow" + object.username
-#         response['actor'] = author_serializer.data
-#         response['object'] = object_serializer.data
-#         return response
 
 class CommentSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source='get_comment_id', required=False)
@@ -189,6 +165,16 @@ class LikedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Liked
         fields = ['type','authorID','items']
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['author1', 'author2']
+
+class NodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        fields = ['host']
 
 # class UUIDEncoder(json.JSONEncoder):
 #     def default(self, obj):

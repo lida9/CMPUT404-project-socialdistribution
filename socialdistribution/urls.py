@@ -21,6 +21,7 @@ urlpatterns = [
 
     # follower
     path('service/author/<str:authorID>/followers/', follow_view.follower_list),
+    path('service/author/<str:authorID>/followings/', follow_view.following_list),
     path('service/author/<str:authorID>/followers/<str:foreignAuthorID>/', follow_view.follower),
     path('service/author/<str:authorID>/inbox/friendrequest/<str:foreignAuthorID>/', inbox_view.friendrequest),
 

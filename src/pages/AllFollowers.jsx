@@ -17,7 +17,6 @@ class AllFollowers extends Component {
   }
 
   removeFollower = async (followerId) => {
-    console.log("Delete this follwer: ", followerId);
     const { authorID } = this.props;
     if (authorID) {
       await axios.delete(`/service/author/${authorID.authorID}/followers/${followerId}/`);

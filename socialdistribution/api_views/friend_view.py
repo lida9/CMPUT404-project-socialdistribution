@@ -4,15 +4,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import *
 from socialdistribution.serializers import *
+from .helper import get_followers_objects
 
 @api_view(['GET'])
 def friend(request, authorID):
-    author = Author.objects.get(authorID=authorID)
-    friend_object, created = Follow.objects.get_or_create(current_user=author)
+    followers_objects = get_followers_objects(authorID) # get followers of author
     friends = []
-    for f in friend_object.users.all(): # foreach follower f of author
-        friend_object_1, created = Follow.objects.get_or_create(current_user=f) # get the followers of f
-        if author in friend_object_1.users.all(): # check if author is also a follower of f
-            serializer = AuthorSerializer(f)
-            friends.append(serializer.data)
+    for f in followers_objects: # foreach follower f of author
+        follower_id = f['authorID'] # get the follower id
+        if Follow.objects.filter(author1=follower_id, author2=authorID).exists(): # check if author is also a follower of f
+            friends.append(f)
     return Response({"type": "friends","items":friends}, status=status.HTTP_200_OK)
