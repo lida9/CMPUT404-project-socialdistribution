@@ -89,22 +89,12 @@ def all_public_posts(request):
     return paginator.get_paginated_response(serializer.data)
 
 
-@api_view([ 'POST'])
+@api_view([ 'GET'])
 #get github activity
 def git_view(request,authorID):
-    if request.method == "POST":
-        data = request.data
-        username = data['username']
+    if request.method == "GET":
+        author = get_object_or_404(Author,authorID = authorID)
+        username = author.github
         url = 'https://api.github.com/users/'+ username + '/events'
         git_msg = requests.get(url).json()
-        data['authorID'] = authorID
-        data['title'] = "My github activity"
-        data['description'] = "activity"
-        data['content'] = json.dumps(git_msg[0])
-        data['origin'] = 'https://api.github.com/'
-        data['source'] = url
-        serializer = PostSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response({'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(git_msg, status=status.HTTP_200_OK)
