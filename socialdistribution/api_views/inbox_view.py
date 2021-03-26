@@ -4,8 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import *
 from socialdistribution.serializers import *
-from .helper import get_valid_nodes
-import requests
+from .helper import get_valid_nodes, get_list_ids, find_remote_author_by_id
 
 @api_view(['GET', 'POST', 'DELETE'])
 def inbox_detail(request, authorID):
@@ -39,30 +38,39 @@ def inbox_detail(request, authorID):
             return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
 
         elif content_type == 'follow':
-            # remote = False
-            # author = get_object_or_404(Author, authorID=authorID)
-
-            # new_follower_ID = request.data['new_follower_ID']
-            # try:
-            #     new_follower = Author.objects.get(authorID=new_follower_ID)
-            # except Author.DoesNotExist: # lookup in remote server
-            #     # todo
-            #     remote = True
-
-            # if not remote:
-            #     # append to follow database if needed
-            #     friend_object, created = Follow.objects.get_or_create(current_user=author)
-            #     if new_follower not in friend_object.users.all():
-            #         Follow.follow(author, new_follower)
-            # if remote: # todo
-            #     pass
-
             new_follower_ID = request.data['new_follower_ID']
+            #new_follower = get_object_or_404(Author, authorID=new_follower_ID)
+            try:
+                new_follower = Author.objects.get(authorID=new_follower_ID)
+            except Author.DoesNotExist:
+                remote = get_list_ids()
+                if new_follower_ID in remote: # the follower is remote
+                    if not Follow.objects.filter(author1=authorID, author2=new_follower_ID).exists():
+                        follow = Follow(author1=authorID, author2=new_follower_ID)
+                        follow.save()
+
+                    author = get_object_or_404(Author, authorID=authorID)
+                    object_name = author.username
+
+                    actor = find_remote_author_by_id(new_follower_ID)
+                    actor_name = actor["displayName"]
+
+                    summary = actor_name + " wants to follow " + object_name
+                    new_follower_serialized = actor
+                    author_serialized = AuthorSerializer(author).data
+
+                    inbox, _ = Inbox.objects.get_or_create(authorID=authorID)
+                    inbox.items.insert(0, {"type": "Follow","summary":summary,"actor":new_follower_serialized,"object":author_serialized}) # append to items list
+                    inbox.save()
+                    return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+
+                else: # the follower doesn't exist
+                    return Response({'message': 'follower does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # author and new follower both local
             if not Follow.objects.filter(author1=authorID, author2=new_follower_ID).exists():
                 follow = Follow(author1=authorID, author2=new_follower_ID) # let new follower follow author
                 follow.save()
-
-            new_follower = get_object_or_404(Author, authorID=new_follower_ID)
             author = get_object_or_404(Author, authorID=authorID)
             actor_name = new_follower.username
             object_name = author.username
