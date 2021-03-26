@@ -16,7 +16,7 @@ class FollowerCard extends Component {
           variant="outlined"
           color="primary"
           onClick={() => { this.props.removeFollower(this.props.follower.authorID) }}>
-          Delete
+          Remove
          </Button>
       </div>
     )

@@ -47,7 +47,7 @@ class AboutMe extends Component {
             currentUser !== null ?
               <div>
                 <a style={{ marginRight: 100 }} href="/author/followers" title="followers"><i className="fas fa-user-friends fa-2x"></i></a>
-                <a style={{ marginRight: 100 }} href="#!" title="followings"><i className="far fa-eye fa-2x"></i></a>
+                <a style={{ marginRight: 100 }} href="/author/followings" title="followings"><i className="far fa-eye fa-2x"></i></a>
                 <a style={{ marginRight: 100 }} href="/author/friends" title="friends"><i className="fas fa-handshake fa-2x"></i></a>
               </div>
               :
