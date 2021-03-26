@@ -30,7 +30,7 @@ class AuthorCard extends Component {
   render() {
     return (
       <div style={{ border: "solid 1px grey" }}>
-        <p>Description: {this.props.author.displayName}</p>
+        <p>Author: {this.props.author.displayName}</p>
         <Button color="primary" variant="outlined" style={{ margin:5 }} onClick={this.follow}>follow</Button>
       </div>
     )
