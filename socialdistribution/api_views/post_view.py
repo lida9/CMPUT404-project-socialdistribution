@@ -7,7 +7,8 @@ from rest_framework import status
 from socialdistribution.models import Post, Author
 from socialdistribution.serializers import PostSerializer, AuthorSerializer
 from socialdistribution.pagination import PostPagination
-
+import requests
+import json
 @api_view(['GET', 'POST'])
 def post_view(request, authorID):
     if request.method == "GET":
@@ -86,3 +87,24 @@ def all_public_posts(request):
     paginated = paginator.paginate_queryset(posts, request)
     serializer = PostSerializer(paginated, many=True)
     return paginator.get_paginated_response(serializer.data)
+
+
+@api_view([ 'POST'])
+#get github activity
+def git_view(request,authorID):
+    if request.method == "POST":
+        data = request.data
+        username = data['username']
+        url = 'https://api.github.com/users/'+ username + '/events'
+        git_msg = requests.get(url).json()
+        data['authorID'] = authorID
+        data['title'] = "My github activity"
+        data['description'] = "activity"
+        data['content'] = json.dumps(git_msg[0])
+        data['origin'] = 'https://api.github.com/'
+        data['source'] = url
+        serializer = PostSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
