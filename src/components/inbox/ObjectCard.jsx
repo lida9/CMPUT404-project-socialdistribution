@@ -13,17 +13,7 @@ class ObjectCard extends Component {
 
   renderItem = () => {
     if (this.props.item.type === "post")  {
-      // if ("remote" in this.props.item) { 
-      //   // remote
-      //   var post = this.getRemotePost(this.props.item.authorID, this.props.item.postID);
-      //   return
-      // } else {
-      //   //local
-      //   var post = this.props.item
-      // }
-      if ("id" in this.props.item) {
-        return <InboxPostCard post={this.props.item}/>
-      }
+      return <InboxPostCard post={this.props.item}/>
     } else if (this.props.item.type === "like") {
       return <LikeCard like={this.props.item}/>
     } else if (this.props.item.type === "Follow") {

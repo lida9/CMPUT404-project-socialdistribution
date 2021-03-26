@@ -39,7 +39,6 @@ class PostCard extends Component {
     try {
       let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
       if (doc.status == 200) {
-        console.log(doc)
         this.setState({ like_button_text: "you have liked!" });
       }
     } catch (err) {
@@ -79,11 +78,35 @@ class PostCard extends Component {
     this.setState({ showComments: !showComments })
   }
 
+  getShareText = () => {
+    if (this.props.post.visibility === "PUBLIC") {
+      return "everyone";
+    } else {
+      return "friends"
+    }
+  }
+
+  reshare = async (authorID) => {
+    if (this.props.post.visibility === "PUBLIC") {
+      // get logged in author's followers
+      var res = await axios.get(`service/author/${authorID}/followers/`);
+    } else {
+      // get logged in author's friends
+      var res = await axios.get(`service/author/${authorID}/friends/`);
+    }
+    var authors = res.data.items;
+    for (let author of authors) {
+      // send to author's inbox
+      let splitUrl = author.id.split("/");
+      let ID = splitUrl[splitUrl.length - 1];
+      let data = { "type": "post", "postID": this.props.post.postID};
+      axios.post(`service/author/${ID}/inbox/`, data);
+    }
+  }
+
   render() {
     var login_id = this.props.post.author.authorID;
     var author_id = this.props.authorID.authorID;
-    console.log(login_id);
-    console.log(author_id);
 
     if (this.props.post.visibility === "FRIEND"){
       if (login_id === author_id){
@@ -91,14 +114,17 @@ class PostCard extends Component {
       }else{
         var visible = false;
       }
-      
-
     }else{
       var visible = true;
     }
 
     return (
       <div style={{ border: "solid 1px grey" }}>
+        <Button color="primary" variant="outlined" className="reshareBtn" style={{ margin: 5 }}
+          onClick={() => this.reshare(author_id)}>
+            Reshare with {this.getShareText()}
+        </Button>
+        
         <h1>Author: {this.props.post.author.displayName}</h1>
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
