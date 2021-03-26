@@ -64,11 +64,11 @@ class PostForm extends Component {
     }
     var authors = res.data.items;
     for (let author of authors) {
-      // send to author's inbox
-      let splitUrl = author.id.split("/");
-      let ID = splitUrl[splitUrl.length - 1];
-      let data = { "type": "post", "postID": postID};
-      axios.post(`service/author/${ID}/inbox/`, data);
+      // only send to local author's inbox
+      if ("authorID" in author) {
+        let data = { "type": "post", "postID": postID};
+        axios.post(`service/author/${author.authorID}/inbox/`, data);
+      }
     }
   }
 
