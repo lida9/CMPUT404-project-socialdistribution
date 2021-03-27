@@ -1,12 +1,15 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import *
 from socialdistribution.serializers import *
 from .helper import get_valid_nodes, get_list_ids, find_remote_author_by_id
+from .permission import AccessPermission, CustomAuthentication
 
 @api_view(['GET', 'POST', 'DELETE'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def inbox_detail(request, authorID):
     host = request.build_absolute_uri("/")
     print(host)
