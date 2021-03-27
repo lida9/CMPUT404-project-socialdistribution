@@ -63,5 +63,8 @@ def login_view(request):
 
 @api_view(['GET'])
 def logout_view(request):
-    return redirect("/")
-    # return redirect("http://localhost:3000/")
+    host = request.build_absolute_uri("/")
+    if host == "http://127.0.0.1:8000/":
+        return redirect("http://localhost:3000/login")
+    else:
+        return redirect("https://cmput-404-socialdistribution.herokuapp.com/login")
