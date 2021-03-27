@@ -63,4 +63,5 @@ def login_view(request):
 
 @api_view(['GET'])
 def logout_view(request):
-    return redirect("http://localhost:3000/")
+    return redirect("/")
+    # return redirect("http://localhost:3000/")
