@@ -70,5 +70,5 @@ https://www.django-rest-framework.org/api-guide/pagination/
 Redux localStorage(Prevent loss on refresh)  
 https://stackoverflow.com/a/45857898/9222182
 
-Get and verify username and password from HTTP_AUTHORIZATION header
+Get and verify username and password from HTTP_AUTHORIZATION header  
 https://stackoverflow.com/a/46428523/13544994
