@@ -68,6 +68,8 @@ def author_detail(request, authorID):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def login_view(request):
     user = authenticate(email=request.data['email'].lower(), password=request.data['password'])
     if user is not None:

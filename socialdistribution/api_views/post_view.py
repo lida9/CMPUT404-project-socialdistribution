@@ -111,6 +111,8 @@ def all_public_posts(request):
 
 
 @api_view([ 'GET'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def github_view(request,authorID):
     # get github activity
     if request.method == "GET":
