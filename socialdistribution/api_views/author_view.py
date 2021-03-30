@@ -1,13 +1,21 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth import authenticate
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import Author
 from socialdistribution.serializers import RegistrationSerializer, AuthorSerializer
+from .helper import is_valid_node
+from .permission import AccessPermission, CustomAuthentication
 
 @api_view(['GET', 'POST'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def register(request):
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == "GET":
         # get all authors sort by display name
         authors = Author.objects.all().order_by('username')
@@ -26,7 +34,13 @@ def register(request):
             return Response({'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def author_detail(request, authorID):
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == "GET":
         # get author data
         author = get_object_or_404(Author, authorID=authorID)

@@ -1,15 +1,23 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import *
 from socialdistribution.serializers import *
 from socialdistribution.pagination import CommentPagination
+from .helper import is_valid_node
+from .permission import AccessPermission, CustomAuthentication
 
 @api_view([ 'GET','POST'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def comment_view(request, author_write_article_ID, postID):
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == "GET":
         paginator = CommentPagination()
         comments = Comment.objects.filter(postID=postID).order_by('-published')
