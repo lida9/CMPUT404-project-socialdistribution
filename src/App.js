@@ -10,6 +10,7 @@ import PublicPost from './pages/PublicPosts';
 import AllFollowers from './pages/AllFollowers';
 import AllFriends from './pages/AllFriends';
 import AllFollowings from './pages/AllFollowings';
+import GitActivities from './pages/GitActivities';
 import NotFound from './components/errors/NotFound';
 import ErrorBoundary from './components/errors/ErrorBoundary';
 
@@ -30,6 +31,7 @@ class App extends Component {
               <Route exact path="/author/followers" component={AllFollowers} />
               <Route exact path="/author/friends" component={AllFriends} />
               <Route exact path="/author/followings" component={AllFollowings} />
+              <Route exact path="/author/gitactivities" component={GitActivities} />
               <Route exact path="/public" component={PublicPost} />
               <Route component={NotFound} />
             </Switch>
