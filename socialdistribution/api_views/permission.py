@@ -14,7 +14,6 @@ class AccessPermission(permissions.BasePermission):
         token_type, _, credentials = auth_header.partition(' ')
 
         expected = base64.b64encode(b'socialdistribution_t18:c404t18').decode()
-
         if token_type == 'Basic' and credentials == expected:
             return True
         else:
@@ -24,6 +23,7 @@ class CustomAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         # check if host
         host = request.build_absolute_uri("/")
+        print(host)
         if host in local:
             return (True, True)
 
