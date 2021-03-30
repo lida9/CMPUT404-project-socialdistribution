@@ -4,8 +4,8 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from socialdistribution.models import Post, Comment
-from socialdistribution.serializers import CommentSerializer
+from socialdistribution.models import *
+from socialdistribution.serializers import *
 from socialdistribution.pagination import CommentPagination
 
 @api_view([ 'GET','POST'])
@@ -30,5 +30,8 @@ def comment_view(request, author_write_article_ID, postID):
             post.count += 1
             post.comment_list.insert(0,serializer.data)
             post.save()
+            inbox, _ = Inbox.objects.get_or_create(authorID=author_write_article_ID)
+            inbox.items.insert(0, serializer.data) # append to items list
+            inbox.save()            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response({'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
