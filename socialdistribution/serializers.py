@@ -56,6 +56,7 @@ class CommentSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source='get_comment_id', required=False)
     author = serializers.CharField(source='get_author',required=False)
     type = serializers.CharField(source='get_type',required=False)
+    summary = serializers.SerializerMethodField("get_summary")
     def to_representation(self, instance):
         response = super(CommentSerializer, self).to_representation(instance)
         #get author from author ID
@@ -68,13 +69,19 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['type','author','comment','contentType','published','commentID','author_write_article_ID','author_write_comment_ID','postID','id']
+        fields = ['type','author','summary','comment','contentType','published','commentID','author_write_article_ID','author_write_comment_ID','postID','id']
     def get_author(self,instance):
         #get author from author ID
         author_data = Author.objects.get(authorID = instance.author_write_comment_ID)
         author_serializer = AuthorSerializer(author_data)
         author = author_serializer.data
         return author
+    
+    def get_summary(self,instance):
+        id = instance.author_write_comment_ID
+        author_comment = Author.objects.get(authorID = id)
+        summary = author_comment.username + " comments on your post"
+        return summary
 
 
 class InboxSerializer(serializers.ModelSerializer):
