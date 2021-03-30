@@ -4,20 +4,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import *
 from socialdistribution.serializers import *
-from .helper import get_valid_nodes, get_list_ids, find_remote_author_by_id
+from .helper import is_valid_node, get_list_ids, find_remote_author_by_id
 from .permission import AccessPermission, CustomAuthentication
 
 @api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([CustomAuthentication])
 @permission_classes([AccessPermission])
 def inbox_detail(request, authorID):
-    host = request.build_absolute_uri("/")
-    print(host)
-    if host not in ["http://127.0.0.1:8000/", "http://localhost:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]:
-        # check valid node
-        valid_nodes = get_valid_nodes()
-        if host not in valid_nodes:
-            return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         # get everything in the inbox
@@ -138,7 +134,12 @@ def inbox_detail(request, authorID):
         return Response({'message':'inbox cleared'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def friendrequest(request, authorID, foreignAuthorID):
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
     type = request.data['type']
     if type == 'accept':
         # author will follow foreign author then they are friend

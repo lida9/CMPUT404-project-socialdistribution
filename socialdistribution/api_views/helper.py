@@ -11,8 +11,17 @@ def get_valid_nodes():
         valid_nodes.append(n["host"])
     return valid_nodes
 
+def is_valid_node(request):
+    host = request.build_absolute_uri("/")
+    if host not in ["http://127.0.0.1:8000/", "http://localhost:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]:
+        # check valid node
+        valid_nodes = get_valid_nodes()
+        if host not in valid_nodes:
+            return False
+    return True
+
 def get_list_ids():
-    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/').json()
+    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/', auth=('CitrusNetwork','oranges')).json()
     ids = []
     authors = req["items"]
     for i in authors:
@@ -20,7 +29,7 @@ def get_list_ids():
     return ids
 
 def find_remote_author_by_id(id):
-    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/').json()
+    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/', auth=('CitrusNetwork','oranges')).json()
     ids = []
     authors = req["items"]
     for i in authors:

@@ -1,16 +1,25 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import Post, Author
 from socialdistribution.serializers import PostSerializer, AuthorSerializer
 from socialdistribution.pagination import PostPagination
+from .helper import is_valid_node
+from .permission import AccessPermission, CustomAuthentication
 import requests
 import json
+
 @api_view(['GET', 'POST'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def post_view(request, authorID):
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == "GET":
         # get recent posts of author (paginated)
         paginator = PostPagination()
@@ -30,7 +39,13 @@ def post_view(request, authorID):
         return Response({'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def post_detail_view(request, authorID, postID):
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == "GET":
         # get post data
         post = get_object_or_404(Post, postID=postID)
@@ -79,8 +94,14 @@ def post_detail_view(request, authorID, postID):
             return Response({'message':"delete was unsuccessful"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)     
 
 
-@api_view(['GET'])  
+@api_view(['GET'])
+@authentication_classes([CustomAuthentication])
+@permission_classes([AccessPermission])
 def all_public_posts(request):
+    valid = is_valid_node(request)
+    if not valid:
+        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
     # get all public posts (paginated)
     paginator = PostPagination()
     posts = Post.objects.filter(visibility="PUBLIC").order_by('-published')
@@ -90,8 +111,8 @@ def all_public_posts(request):
 
 
 @api_view([ 'GET'])
-#get github activity
-def git_view(request,authorID):
+def github_view(request,authorID):
+    # get github activity
     if request.method == "GET":
         author = get_object_or_404(Author,authorID = authorID)
         username = author.github
