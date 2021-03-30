@@ -12,6 +12,15 @@ Make a distributed social network!
 ## Documentation
 [API Documentation](https://app.swaggerhub.com/apis-docs/lida9/SocialDistribution/1.0.0-oas3)
 
+## Basic Authentication
+username: socialdistribution_t18  
+password: c404t18  
+
+## Admin account
+https://cmput-404-socialdistribution.herokuapp.com/admin/  
+email: team18@admin.com  
+password: team18
+
 ## Running frontend
 ```
 # install dependencies
