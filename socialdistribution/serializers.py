@@ -80,7 +80,7 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_summary(self,instance):
         id = instance.author_write_comment_ID
         author_comment = Author.objects.get(authorID = id)
-        summary = author_comment.username + " comments your post"
+        summary = author_comment.username + " comments on your post"
         return summary
 
 
