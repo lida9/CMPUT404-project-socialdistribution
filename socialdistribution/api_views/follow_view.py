@@ -59,6 +59,16 @@ def follower(request, authorID, foreignAuthorID):
         except Follow.DoesNotExist:
             # not a follower
             return Response({'message':"Not a follower"}, status=status.HTTP_200_OK)
-        else:
+
+        else: # indeed a follower
             follow_obj.delete()
-            return Response({'message':"Success"}, status=status.HTTP_200_OK)
+
+            try: # if the follower is local, do nothing
+                follow_author = Author.objects.get(authorID=foreignAuthorID) # get the author being followed
+                return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+
+            except Author.DoesNotExist: # if the follower is remote, need to put to their server
+                url = 'https://citrusnetwork.herokuapp.com/service/author/' + foreignAuthorID + '/followers/' + authorID + '/'
+                r = requests.delete(url, auth=('CitrusNetwork','oranges'))
+                if r.status_code == 201:
+                    return Response({'message':'Success!'}, status=status.HTTP_200_OK)
