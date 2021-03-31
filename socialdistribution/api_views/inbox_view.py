@@ -200,9 +200,3 @@ def friendrequest(request, authorID, foreignAuthorID):
         return Response({'message':'Success!'}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-@authentication_classes([CustomAuthentication])
-@permission_classes([AccessPermission])
-def test_view(request):
-    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/', auth=('CitrusNetwork','oranges')).json()
-    print(req)
