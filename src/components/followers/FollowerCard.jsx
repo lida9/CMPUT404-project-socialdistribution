@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Button } from "@material-ui/core";
 
 class FollowerCard extends Component {
-  getFollowerID = () => {
+  getAuthorID = () => {
     if ("authorID" in this.props.follower) {
       return this.props.follower.authorID;
     } else {
@@ -16,13 +16,13 @@ class FollowerCard extends Component {
       <div style={{ border: "solid 1px", margin: 10 }}>
         <div style={{ margin: 5 }}>
           <h3>Follower's Name: {this.props.follower.displayName}</h3>
-          <p>Follower's ID: {this.getFollowerID()}</p>
+          <p>Follower's ID: {this.getAuthorID()}</p>
         </div>
         <Button
           style={{ margin: 10 }}
           variant="outlined"
           color="primary"
-          onClick={() => { this.props.removeFollower(this.getFollowerID()) }}>
+          onClick={() => { this.props.removeFollower(this.getAuthorID()) }}>
           Remove
          </Button>
       </div>
