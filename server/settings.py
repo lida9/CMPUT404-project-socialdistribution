@@ -87,14 +87,11 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
-# CORS_ALLOW_ALL_ORIGINS=True
-# ALLOWED_HOSTS = [
-#     "https://citrusnetwork.herokuapp.com/"
-# ]
 CORS_ALLOWED_ORIGINS = [
     "https://citrusnetwork.herokuapp.com",
     "http://localhost:3000",
     "http://127.0.0.1:8000",
+    "https://citrusnetwork-test.herokuapp.com",
 ]
 
 # Database
