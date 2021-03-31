@@ -4,10 +4,10 @@ import { Button } from "@material-ui/core";
 
 class FriendCard extends Component {
   getAuthorID = () => {
-    if ("authorID" in this.props.follower) {
-      return this.props.follower.authorID;
+    if ("authorID" in this.props.friend) {
+      return this.props.friend.authorID;
     } else {
-      return this.props.follower.id;
+      return this.props.friend.id;
     }
   }
 
