@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import *
-# import json
+import requests
 # from uuid import UUID
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -60,11 +60,17 @@ class CommentSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super(CommentSerializer, self).to_representation(instance)
         #get author from author ID
-        author = Author.objects.get(authorID = instance.author_write_comment_ID)
-        author_serializer = AuthorSerializer(author)
+        try:
+            author = Author.objects.get(authorID = instance.author_write_comment_ID)
+            author_serializer = AuthorSerializer(author)
+            author_data = author_serializer.data
+        except Author.DoesNotExist:
+            url = 'https://citrusnetwork.herokuapp.com/service/author/'+instance.author_write_comment_ID+'/'
+            author_data = requests.get(url, auth=('CitrusNetwork','oranges')).json()
+    
         response['postID'] = str(response['postID'])
         response['commentID'] = str(response['commentID'])
-        response['author'] = author_serializer.data # add author data
+        response['author'] = author_data # add author data
         return response
 
     class Meta:
@@ -79,8 +85,16 @@ class CommentSerializer(serializers.ModelSerializer):
     
     def get_summary(self,instance):
         id = instance.author_write_comment_ID
-        author_comment = Author.objects.get(authorID = id)
-        summary = author_comment.username + " comments on your post"
+
+        try:
+            author = Author.objects.get(authorID = id)
+            author_serializer = AuthorSerializer(author)
+            author_data = author_serializer.data
+        except Author.DoesNotExist:
+            url = 'https://citrusnetwork.herokuapp.com/service/author/'+id+'/'
+            author_data = requests.get(url, auth=('CitrusNetwork','oranges')).json()
+
+        summary = author_data['displayName'] + " comments on your post"
         return summary
 
 
@@ -102,13 +116,19 @@ class LikePostSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super(LikePostSerializer, self).to_representation(instance)
         #get author from author ID
-        author_like = Author.objects.get(authorID = instance.author_like_ID)
-        author_like_serializer = AuthorSerializer(author_like)
+        try:
+            author_like = Author.objects.get(authorID = instance.author_like_ID)
+            author_like_serializer = AuthorSerializer(author_like)
+            author_data = author_like_serializer.data
+        except Author.DoesNotExist:
+            url = 'https://citrusnetwork.herokuapp.com/service/author/'+instance.author_like_ID+'/'
+            author_data = requests.get(url, auth=('CitrusNetwork','oranges')).json()
+
         del response['author_write_article_ID']
         del response['postID']
         del response['author_like_ID']
-        response['author'] = author_like_serializer.data # add author data
-        response['summary'] = author_like.username + " likes your post"
+        response['author'] = author_data # add author data
+        response['summary'] = author_data['displayName'] + " likes your post"
         return response
 
     class Meta:
