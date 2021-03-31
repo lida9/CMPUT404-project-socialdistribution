@@ -10,6 +10,7 @@ class AllFollowings extends Component {
 
   componentDidMount = async () => {
     const { authorID } = this.props;
+    console.log("Current user: ", authorID);
     if (authorID) {
       await this.getFollowings();
     }
@@ -25,7 +26,9 @@ class AllFollowings extends Component {
   removeFollowing = async (followingId) => {
     const { authorID } = this.props;
     if (authorID) {
-      console.log("delete this following: ", followingId);
+      // await axios.delete(`/service/author/${authorID.authorID}/unfollow/${followingId}/`);
+      await axios.delete(`/service/author/${followingId}/followers/${authorID.authorID}/`);
+      await this.getFollowings();
     }
   }
 
