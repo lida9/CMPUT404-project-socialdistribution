@@ -18,17 +18,6 @@ def follower_list(request, authorID): # GET: get a list of authors who are their
     followers = get_followers_objects(authorID)
     return Response({"type": "followers","items":followers}, status=status.HTTP_200_OK)
 
-@api_view(['GET'])
-@authentication_classes([CustomAuthentication])
-@permission_classes([AccessPermission])
-def following_list(request, authorID): # GET: get a list of authors who they are following
-    valid = is_valid_node(request)
-    if not valid:
-        return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
-
-    followings = get_followings_objects(authorID)
-    return Response({"type": "followings","items":followings}, status=status.HTTP_200_OK)
-
 @api_view(['GET', 'DELETE', 'PUT'])
 @authentication_classes([CustomAuthentication])
 @permission_classes([AccessPermission])
