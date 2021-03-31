@@ -142,7 +142,7 @@ def inbox_detail(request, authorID):
                         del data['postID']
                         inbox_url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
                         response = requests.post(inbox_url, data=json.dumps(data), auth=('CitrusNetwork','oranges'))
-                        if response.status_code == 200:
+                        if response.status_code == 201:
                             return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
                         else:
                             return Response({'message':'some error occurred'}, status=status.HTTP_400_BAD_REQUEST)
