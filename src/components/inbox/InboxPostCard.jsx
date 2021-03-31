@@ -25,11 +25,20 @@ class PostCard extends Component {
 
   likepostClick = async () => {
     var author_url = this.props.post.author.id;
-    var author_data = author_url.split("/");
-    var post_author_id = author_data[4];
+    if (author_url.includes("/")) {
+      var author_data = author_url.split("/");
+      var post_author_id = author_data[4];
+    } else {
+      var post_author_id = author_url
+    }
+  
     var login_author_id = this.props.authorID.authorID;
-    var post_id = this.props.post.postID;
-
+    if ("postID" in this.props.post) {
+      var post_id = this.props.post.postID;
+    } else {
+      var post_id = this.props.post.id;
+    }
+    
     var post_information = {
       "summary": "post",
       "type": "like",

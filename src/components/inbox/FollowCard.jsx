@@ -20,13 +20,14 @@ class FollowCard extends Component {
     }
 
     accept = async () => {
-        var author_url = this.props.follow.object.id
-        var author_data = author_url.split("/")
-        var author_id = author_data[4]
+        var author_id = this.props.follow.object.authorID;
 
         var follower_url = this.props.follow.actor.id
-        var follower_data = follower_url.split("/")
-        var follower_id = follower_data[4]
+        if (follower_url.includes("/")) {
+            var follower_id = this.props.follow.actor.authorID;
+        } else {
+            var follower_id = follower_url; // remote
+        }
 
         var post_information = {
             "type": "accept",
@@ -43,13 +44,14 @@ class FollowCard extends Component {
     }
 
     reject = async () => {
-        var author_url = this.props.follow.object.id
-        var author_data = author_url.split("/")
-        var author_id = author_data[4]
+        var author_id = this.props.follow.object.authorID;
 
         var follower_url = this.props.follow.actor.id
-        var follower_data = follower_url.split("/")
-        var follower_id = follower_data[4]
+        if (follower_url.includes("/")) {
+            var follower_id = this.props.follow.actor.authorID;
+        } else {
+            var follower_id = follower_url; // remote
+        }
 
         var post_information = {
             "type": "reject",
@@ -95,12 +97,13 @@ class FollowCard extends Component {
             var answeredRequests = this.checkIfClicked();
 
             // get author and follower id
-            var author_url = this.props.follow.object.id
-            var author_data = author_url.split("/")
-            var author_id = author_data[4]
+            var author_id = this.props.follow.object.authorID;
             var follower_url = this.props.follow.actor.id
-            var follower_data = follower_url.split("/")
-            var follower_id = follower_data[4]
+            if (follower_url.includes("/")) {
+                var follower_id = this.props.follow.actor.authorID;
+            } else {
+                var follower_id = follower_url; // remote
+            }
 
             for (var key in answeredRequests) {
                 if (key === author_id + follower_id) {
