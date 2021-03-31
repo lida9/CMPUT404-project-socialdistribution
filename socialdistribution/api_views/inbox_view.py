@@ -34,7 +34,9 @@ def inbox_detail(request, authorID):
                 item_serializer = PostSerializer(post)
                 data = item_serializer.data
             except Post.DoesNotExist:
-                pass
+                # get post from remote
+                url = 'https://citrusnetwork.herokuapp.com/service/author/{}/posts/{}'.format(authorID, postID)
+                data = requests.get(url, auth=('CitrusNetwork','oranges')).json()
 
             # add to author's inbox
             try:
