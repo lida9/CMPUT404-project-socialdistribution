@@ -105,21 +105,51 @@ def inbox_detail(request, authorID):
             like_sum = request.data['summary']
             if ("post" in like_sum):
                 data['author_write_article_ID'] = authorID
-                # get author who likes and send to liked
-                author_like_ID = data['author_like_ID']
-                item_serializer = LikePostSerializer(data=data)
-                if item_serializer.is_valid():
-                    item_serializer.save() # save the item to the other form in db
-                else:
-                    return Response({'message':item_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                # get author who was liked
+                try: 
+                    Author.objects.get(authorID = authorID)
+                    # get the author who sends the like
+                    author_like_ID = data['author_like_ID']
+                    item_serializer = LikePostSerializer(data=data)
+                    if item_serializer.is_valid():
+                        item_serializer.save() # save the item to the other form in db
+                    else:
+                        return Response({'message':item_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                    inbox, _ = Inbox.objects.get_or_create(authorID=authorID)
+                    inbox.items.insert(0, item_serializer.data) # append to items list
+                    inbox.save()
+                    liked,_ = Liked.objects.get_or_create(authorID=author_like_ID)
+                    liked.items.insert(0, item_serializer.data) # append to items list
+                    liked.save()
+                    return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+                except Author.DoesNotExist:
+                    get_author_url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID
+                    r_author = requests.get(get_author_url, data=json.dumps(data), auth=('CitrusNetwork','oranges'))
+                    if r_author.status_code == 200:
+                        author_information = r_author.content
+                        author_information = author_information.decode("utf-8")
+                        data['author'] = author_information
+                        data['type'] = 'Like'
+                        author_like_ID = data['author_like_ID']
+                        author_Like = Author.objects.get(authorID = author_like_ID)
+                        postID = data["postID"]
+                        data['summary'] = author_Like.username + " Likes your post"
+                        data['@context'] = "https://www.citrusnetwork.herokuapp.com/service/author/" + authorID + "/view-post/" + postID + "/"
+                        data['object'] = "http://127.0.0.1:5454/author/"+ authorID +"/posts/"+postID
 
-                inbox, _ = Inbox.objects.get_or_create(authorID=authorID)
-                inbox.items.insert(0, item_serializer.data) # append to items list
-                inbox.save()
-                liked,_ = Liked.objects.get_or_create(authorID=author_like_ID)
-                liked.items.insert(0, item_serializer.data) # append to items list
-                liked.save()
-                return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+                        del data['author_like_ID']
+                        del data['author_write_article_ID']
+                        del data['postID']
+                        inbox_url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
+                        response = requests.post(inbox_url, data=json.dumps(data), auth=('CitrusNetwork','oranges'))
+                        if response.status_code == 200:
+                            return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+                        else:
+                            return Response({'message':'some error occurred'}, status=status.HTTP_400_BAD_REQUEST)
+                    elif  r_author.status_code == 404: 
+                        return Response({'message':'no user found'}, status=status.HTTP_404_NOT_FOUND)
+                    else:
+                         return Response({'message':'service unavailable'}, status=status.HTTP_504_GATEWAY_TIMEOUT)              
 
             elif("comment" in like_sum):
                 data['author_write_article_ID'] = authorID
