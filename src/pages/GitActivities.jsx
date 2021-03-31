@@ -32,7 +32,7 @@ class GitActivities extends Component {
         <h1>Your Git activities:</h1>
         <div>
           {
-            allActivities.length !== 0 ?
+            allActivities.length !== 0 && allActivities.map !== undefined ?
               allActivities.map((activity, index) => <GitCard key={index} activity={activity} />)
               :
               null

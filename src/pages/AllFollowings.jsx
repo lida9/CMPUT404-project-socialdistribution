@@ -26,9 +26,9 @@ class AllFollowings extends Component {
   removeFollowing = async (followingId) => {
     const { authorID } = this.props;
     if (authorID) {
-      console.log(`${followingId} removed me ${authorID.authorID}`);
-      // await axios.delete(`/service/author/${followingId}/followers/${authorID.authorID}`);
-      // await this.getFollowings();
+      // await axios.delete(`/service/author/${authorID.authorID}/unfollow/${followingId}/`);
+      await axios.delete(`/service/author/${followingId}/followers/${authorID.authorID}/`);
+      await this.getFollowings();
     }
   }
 
