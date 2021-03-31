@@ -29,19 +29,14 @@ def get_list_ids():
     return ids
 
 def find_remote_author_by_id(id):
-    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/', auth=('CitrusNetwork','oranges')).json()
-    ids = []
-    authors = req["items"]
-    for i in authors:
-        ids.append(i["id"])
-
-    index = ids.index(id)
-    return authors[index]
+    req = requests.get('https://citrusnetwork.herokuapp.com/service/author/'+id+'/', auth=('CitrusNetwork','oranges')).json()
+    return req
 
 def get_followers_objects(authorID):
     follow_obj = Follow.objects.filter(author1=authorID)
     follow_serializer = FollowSerializer(follow_obj, many=True)
     followers = []
+    remote = get_list_ids()
     for f in follow_serializer.data:
         follower_ID = f['author2']
         try:
@@ -49,7 +44,6 @@ def get_followers_objects(authorID):
             serializer = AuthorSerializer(follower)
             followers.append(serializer.data)
         except Author.DoesNotExist:
-            remote = get_list_ids()
             if follower_ID in remote: # the follower is remote
                 follower = find_remote_author_by_id(follower_ID)
                 followers.append(follower)
@@ -59,6 +53,7 @@ def get_followings_objects(authorID):
     objects = Follow.objects.filter(author2=authorID) # all objects where author is a follower
     objects_serializer = FollowSerializer(objects, many=True)
     followings = []
+    remote = get_list_ids()
     for f in objects_serializer.data:
         following_ID = f['author1']
         try:
@@ -66,7 +61,6 @@ def get_followings_objects(authorID):
             serializer = AuthorSerializer(following_author)
             followings.append(serializer.data)
         except Author.DoesNotExist:
-            remote = get_list_ids()
             if following_ID in remote: # the remote author being followed
                 following_author = find_remote_author_by_id(following_ID)
                 followings.append(following_author)

@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import Author
 from socialdistribution.serializers import RegistrationSerializer, AuthorSerializer
+from django.db.models import Q
 from .helper import is_valid_node
 from .permission import AccessPermission, CustomAuthentication
 
@@ -18,7 +19,7 @@ def register(request):
 
     if request.method == "GET":
         # get all authors sort by display name
-        authors = Author.objects.all().order_by('username')
+        authors = Author.objects.filter(~Q(email="team18@admin.com")).order_by('username')
         serializer = AuthorSerializer(authors, many=True)
         return Response(serializer.data)
 
