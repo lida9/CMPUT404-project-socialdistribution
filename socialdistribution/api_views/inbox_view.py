@@ -164,7 +164,16 @@ def friendrequest(request, authorID, foreignAuthorID):
         if not Follow.objects.filter(author1=foreignAuthorID, author2=authorID).exists():
             follow = Follow(author1=foreignAuthorID, author2=authorID)
             follow.save()
-        return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+
+            try: # if the author is local, do nothing
+                following_author = Author.objects.get(authorID=foreignAuthorID) # get the author being followed
+                return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+
+            except Author.DoesNotExist: # if the author is remote, need to put to their server
+                url = 'https://citrusnetwork.herokuapp.com/service/author/' + foreignAuthorID + '/followers/' + authorID + '/'
+                r = requests.put(url, auth=('CitrusNetwork','oranges'))
+                if r.status_code == 201:
+                    return Response({'message':'Success!'}, status=status.HTTP_200_OK)
 
     elif type == 'reject':
         return Response({'message':'Success!'}, status=status.HTTP_200_OK)
