@@ -85,6 +85,11 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
+CORS_ALLOW_ALL_ORIGINS=True
+ALLOWED_HOSTS = [
+    "https://citrusnetwork.herokuapp.com/"
+]
+
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
