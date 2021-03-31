@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Button } from "@material-ui/core";
+// import { Button } from "@material-ui/core";
 
 class FriendCard extends Component {
   getAuthorID = () => {
@@ -18,13 +18,13 @@ class FriendCard extends Component {
           <h3>Friend's Name: {this.props.friend.displayName}</h3>
           <p>Friend's ID: {this.getAuthorID()}</p>
         </div>
-        <Button
+        {/* <Button
           style={{ margin: 10 }}
           variant="outlined"
           color="primary"
           onClick={() => this.props.removeFriend(this.getAuthorID())} >
-          Delete
-          </Button>
+          Unfriend
+          </Button> */}
       </div>
     )
   }
