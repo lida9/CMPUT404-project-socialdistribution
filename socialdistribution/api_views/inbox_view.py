@@ -4,8 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from socialdistribution.models import *
 from socialdistribution.serializers import *
+import requests
 from .helper import is_valid_node, get_list_ids, find_remote_author_by_id
 from .permission import AccessPermission, CustomAuthentication
+import json
+
 
 @api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([CustomAuthentication])
@@ -16,9 +19,6 @@ def inbox_detail(request, authorID):
         return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
-        # get everything in the inbox
-        #res = requests.get('https://citrusnetwork.herokuapp.com/service/authors/').json()
-
         obj, created = Inbox.objects.get_or_create(authorID=authorID)
         serializer = InboxSerializer(obj)
         return Response(serializer.data)
@@ -27,14 +27,30 @@ def inbox_detail(request, authorID):
         content_type = request.data['type'] # post/follow/like
 
         if content_type == 'post':
-            postID = request.data['postID']
-            post = Post.objects.get(postID=postID)
-            item_serializer = PostSerializer(post)
+            # get post object
+            try:
+                postID = request.data['postID']
+                post = Post.objects.get(postID=postID)
+                item_serializer = PostSerializer(post)
+                data = item_serializer.data
+            except Post.DoesNotExist:
+                pass
 
-            inbox, _ = Inbox.objects.get_or_create(authorID=authorID)
-            inbox.items.insert(0, item_serializer.data) # append to items list
-            inbox.save()
-            return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+            # add to author's inbox
+            try:
+                Author.objects.get(authorID=authorID) # check if local author
+                inbox, _ = Inbox.objects.get_or_create(authorID=authorID)
+                inbox.items.insert(0, data) # append to items list
+                inbox.save()
+                return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+            except Author.DoesNotExist:
+                # remote author
+                url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
+                r = requests.post(url, data=json.dumps(data), auth=('CitrusNetwork','oranges'))
+                if r.status_code == 201:
+                    return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'message':'some error occurred'}, status=status.HTTP_400_BAD_REQUEST)
 
         elif content_type == 'follow':
             new_follower_ID = request.data['new_follower_ID']
