@@ -5,6 +5,7 @@ from rest_framework import status
 from socialdistribution.models import Author, Follow
 from .helper import is_valid_node, get_followings_objects
 from .permission import AccessPermission, CustomAuthentication
+import requests, json
 
 @api_view(['GET'])
 @authentication_classes([CustomAuthentication])
@@ -35,9 +36,10 @@ def unfollow(request, authorID, foreignAuthorID):
             follow_obj.delete()
             try: # if the following is local, do nothing
                 follow_author = Author.objects.get(authorID=foreignAuthorID) # get the author being followed
-                return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+
             except Author.DoesNotExist: # if the following is remote, need to put to their server
                 url = 'https://citrusnetwork.herokuapp.com/service/author/' + foreignAuthorID + '/followers/' + authorID + '/'
                 r = requests.delete(url, auth=('CitrusNetwork','oranges'))
-                if r.status_code == 201:
+                if r.status_code == 200:
                     return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+            return Response({'message':'Success!'}, status=status.HTTP_200_OK)
