@@ -56,7 +56,35 @@ def inbox_detail(request, authorID):
 
         elif content_type == 'follow':
             new_follower_ID = request.data['new_follower_ID']
-            #new_follower = get_object_or_404(Author, authorID=new_follower_ID)
+            try:
+                # check if being followed is remote author, authorID is remote
+                being_followed = Author.objects.get(authorID=authorID)
+            except Author.DoesNotExist:
+                if not Follow.objects.filter(author1=authorID, author2=new_follower_ID).exists():
+                    follow = Follow(author1=authorID, author2=new_follower_ID)
+                    follow.save()
+                new_data = {"type":"Follow"}
+                author = get_object_or_404(Author, authorID=new_follower_ID)
+                actor_name = author.username
+
+                remote_object= find_remote_author_by_id(authorID) # remote author is object
+                object_name = remote_object["displayName"]
+
+                summary = actor_name + " wants to follow " + object_name
+                author_serialized = AuthorSerializer(author).data
+
+                new_data['summary'] = summary
+                new_data['actor'] = author_serialized
+                new_data['object'] = remote_object
+
+                url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
+                r = requests.post(url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
+
+                if r.status_code < 400:
+                    return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'message':item_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                 
             try:
                 new_follower = Author.objects.get(authorID=new_follower_ID)
             except Author.DoesNotExist:
@@ -164,6 +192,33 @@ def friendrequest(request, authorID, foreignAuthorID):
         if not Follow.objects.filter(author1=foreignAuthorID, author2=authorID).exists():
             follow = Follow(author1=foreignAuthorID, author2=authorID)
             follow.save()
+
+            try: # if the author is local, do nothing
+                following_author = Author.objects.get(authorID=foreignAuthorID) # get the author being followed
+
+            except Author.DoesNotExist: # if the author is remote, need to put to their server
+                new_data = {"type":"Follow"}
+                author = get_object_or_404(Author, authorID=authorID)
+                actor_name = author.username
+
+                remote_object= find_remote_author_by_id(foreignAuthorID) # remote author is object
+                object_name = remote_object["displayName"]
+
+                summary = actor_name + " wants to follow " + object_name
+                author_serialized = AuthorSerializer(author).data
+
+                new_data['summary'] = summary
+                new_data['actor'] = author_serialized
+                new_data['object'] = remote_object
+
+                url = 'https://citrusnetwork.herokuapp.com/service/author/' + foreignAuthorID + '/inbox/'
+                r = requests.post(url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
+
+                if r.status_code < 400:
+                    return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'message':item_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                    
         return Response({'message':'Success!'}, status=status.HTTP_200_OK)
 
     elif type == 'reject':
