@@ -6,6 +6,7 @@ from socialdistribution.models import Author, Follow
 from socialdistribution.serializers import AuthorSerializer, FollowSerializer
 from .helper import is_valid_node, get_followers_objects, get_followings_objects
 from .permission import AccessPermission, CustomAuthentication
+import requests, json
 
 @api_view(['GET'])
 @authentication_classes([CustomAuthentication])
@@ -72,3 +73,4 @@ def follower(request, authorID, foreignAuthorID):
                 r = requests.delete(url, auth=('CitrusNetwork','oranges'))
                 if r.status_code == 201:
                     return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+            return Response({'message':'Success!'}, status=status.HTTP_200_OK)
