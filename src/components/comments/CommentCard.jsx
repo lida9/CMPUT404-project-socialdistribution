@@ -14,23 +14,29 @@ class CommentCard extends Component {
 
   }
 
-  likeCommentClick=async()=>{
+  likeCommentClick = async () => {
     var post_information = {
       "summary": "comment",
-      "type":"like",
-      "author_like_ID":"",
-      "commentID":"",
-      "postID":""
-      }
+      "type": "like",
+      "author_like_ID": "",
+      "commentID": "",
+      "postID": ""
+    }
     post_information['author_like_ID'] = this.props.authorID.authorID
     post_information['commentID'] = this.props.content.commentID
     post_information['postID'] = this.props.content.postID
     var comment_author_information = this.props.content.author_write_comment_ID
-    
 
-    
+
+
     try {
-      let doc = await axios.post(`service/author/${comment_author_information}/inbox/`, post_information)
+      let doc = await axios.post(`service/author/${comment_author_information}/inbox/`, post_information,
+        {
+          auth: {
+            username: "socialdistribution_t18",
+            password: "c404t18"
+          }
+        })
       if (doc.status === 200) {
         console.log(doc)
         this.setState({ like_button_text: "liked" });
@@ -43,9 +49,9 @@ class CommentCard extends Component {
 
   render() {
     return (
-      <div style={{ margin: 10, border: "solid 1px black"}}>
+      <div style={{ margin: 10, border: "solid 1px black" }}>
         <p>{this.props.content.comment}</p>
-        <Button  color="primary" onClick = {this.likeCommentClick}>{this.state.like_button_text}</Button>
+        <Button color="primary" onClick={this.likeCommentClick}>{this.state.like_button_text}</Button>
       </div>
     );
   }

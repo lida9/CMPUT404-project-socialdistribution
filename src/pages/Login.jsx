@@ -18,7 +18,12 @@ class Login extends Component {
     const { email, password } = this.state;
     if (email && password) {
       try {
-        const doc = await axios.post("service/author/login/", { email, password });
+        const doc = await axios.post("service/author/login/", { email, password }, {
+          auth: {
+            username: "socialdistribution_t18",
+            password: "c404t18"
+          }
+        });
         this.props.setCurrentUser(doc.data);
 
         window.location = "/";
@@ -55,7 +60,7 @@ class Login extends Component {
           onChange={(e) => this.setState({ password: e.target.value })}
         />
         <Button id="login-btn" color="primary"
-              variant="outlined" onClick={this.handleLogin}>Login</Button>
+          variant="outlined" onClick={this.handleLogin}>Login</Button>
       </div>
     )
   }

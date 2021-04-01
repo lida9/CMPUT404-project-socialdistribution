@@ -17,7 +17,12 @@ class GitActivities extends Component {
 
   getActivities = async () => {
     const { authorID } = this.props;
-    const doc = await axios.get(`/service/author/${authorID.authorID}/github/`);
+    const doc = await axios.get(`/service/author/${authorID.authorID}/github/`, {
+      auth: {
+        username: "socialdistribution_t18",
+        password: "c404t18"
+      }
+    });
     if (doc.status === 200) {
       this.setState({ allActivities: doc.data })
 

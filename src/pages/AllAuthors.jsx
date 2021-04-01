@@ -17,8 +17,8 @@ class AllAuthors extends Component {
   componentDidMount = async () => {
     const { authorID } = this.props;
     if (authorID) {
-      const author = await axios.get(`service/author/${authorID.authorID}/`);
-      const res = await axios.get("service/author/");
+      const author = await axios.get(`service/author/${authorID.authorID}/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+      const res = await axios.get("service/author/", { auth: { username: "socialdistribution_t18", password: "c404t18" } });
       console.log(res.data);
       this.setState({
         currentUser: author.data,
@@ -39,7 +39,7 @@ class AllAuthors extends Component {
         }
 
         try {
-          const doc = await axios.post(`/service/author/${remoteAuthorId}/inbox/`, req_body);
+          const doc = await axios.post(`/service/author/${remoteAuthorId}/inbox/`, req_body, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
           if (doc.status === 200) {
             console.log("Success:", doc);
           }

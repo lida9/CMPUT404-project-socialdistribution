@@ -26,7 +26,12 @@ class AllFriends extends Component {
 
   getFriends = async () => {
     const { authorID } = this.props;
-    const doc = await axios.get(`/service/author/${authorID.authorID}/friends/`);
+    const doc = await axios.get(`/service/author/${authorID.authorID}/friends/`, {
+      auth: {
+        username: "socialdistribution_t18",
+        password: "c404t18"
+      }
+    });
     this.setState({ friends: doc.data.items });
   }
 

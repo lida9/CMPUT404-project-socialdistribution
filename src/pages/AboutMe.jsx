@@ -20,7 +20,7 @@ class AboutMe extends Component {
     const { authorID } = this.props;
     console.log("authorID in AboutMe (componentDidMount):", authorID);
     if (authorID) {
-      const doc = await axios.get(`service/author/${authorID.authorID}/`);
+      const doc = await axios.get(`service/author/${authorID.authorID}/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
       this.setState({ currentUser: doc.data })
       this.getPosts();
     }
@@ -28,7 +28,7 @@ class AboutMe extends Component {
 
   getPosts = async () => {
     const { authorID } = this.props;
-    const doc = await axios.get(`service/author/${authorID.authorID}/posts/`);
+    const doc = await axios.get(`service/author/${authorID.authorID}/posts/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
     this.setState({ userPosts: doc.data.posts });
   }
 

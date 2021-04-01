@@ -19,7 +19,12 @@ class AllFollowers extends Component {
   removeFollower = async (followerId) => {
     const { authorID } = this.props;
     if (authorID) {
-      await axios.delete(`/service/author/${authorID.authorID}/followers/${followerId}/`);
+      await axios.delete(`/service/author/${authorID.authorID}/followers/${followerId}/`, {
+        auth: {
+          username: "socialdistribution_t18",
+          password: "c404t18"
+        }
+      });
       await this.getFollowers();
     }
 
@@ -27,7 +32,12 @@ class AllFollowers extends Component {
 
   getFollowers = async () => {
     const { authorID } = this.props;
-    const doc = await axios.get(`/service/author/${authorID.authorID}/followers/`);
+    const doc = await axios.get(`/service/author/${authorID.authorID}/followers/`, {
+      auth: {
+        username: "socialdistribution_t18",
+        password: "c404t18"
+      }
+    });
     this.setState({ followers: doc.data.items });
   }
 

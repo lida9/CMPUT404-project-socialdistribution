@@ -31,14 +31,14 @@ class PostCard extends Component {
     } else {
       var post_author_id = author_url
     }
-  
+
     var login_author_id = this.props.authorID.authorID;
     if ("postID" in this.props.post) {
       var post_id = this.props.post.postID;
     } else {
       var post_id = this.props.post.id;
     }
-    
+
     var post_information = {
       "summary": "post",
       "type": "like",
@@ -46,8 +46,14 @@ class PostCard extends Component {
       "postID": post_id,
     }
     try {
-      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
-      if (doc.status == 200) {
+      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information,
+        {
+          auth: {
+            username: "socialdistribution_t18",
+            password: "c404t18"
+          }
+        })
+      if (doc.status === 200) {
         this.setState({ like_button_text: "you have liked!" });
       }
     } catch (err) {
@@ -73,7 +79,13 @@ class PostCard extends Component {
     if ("postID" in post) {
       try {
         const res = await axios.get(`service/author/${post.author.authorID}/posts/${post.postID}/comments/`,
-          { params: { page: page } });
+          {
+            params: { page: page },
+            auth: {
+              username: "socialdistribution_t18",
+              password: "c404t18"
+            }
+          });
         this.setState({ comments: res.data.comments });
       } catch (e) {
         console.log(e);
@@ -102,34 +114,58 @@ class PostCard extends Component {
   getPostID = () => {
     if ("postID" in this.props.post) {
       return this.props.post.postID
-    } 
+    }
     return this.props.post.id
   }
 
   getPostAuthorID = () => {
     if ("postID" in this.props.post) {
       return this.props.post.authorID;
-    } 
+    }
     return this.props.post.author.id;
   }
 
   reshare = async (authorID) => {
     if (this.props.post.visibility === "PUBLIC") {
       // get logged in author's followers
-      var res = await axios.get(`service/author/${authorID}/followers/`);
+      var res = await axios.get(`service/author/${authorID}/followers/`,
+        {
+          auth: {
+            username: "socialdistribution_t18",
+            password: "c404t18"
+          }
+        });
     } else {
       // get logged in author's friends
-      var res = await axios.get(`service/author/${authorID}/friends/`);
+      var res = await axios.get(`service/author/${authorID}/friends/`,
+        {
+          auth: {
+            username: "socialdistribution_t18",
+            password: "c404t18"
+          }
+        });
     }
     var authors = res.data.items;
     for (let author of authors) {
-      let data = { "type": "post", "postID": this.props.post.postID};
+      let data = { "type": "post", "postID": this.props.post.postID };
       if ("authorID" in author) {
         // local
-        axios.post(`service/author/${author.authorID}/inbox/`, data);
+        axios.post(`service/author/${author.authorID}/inbox/`, data,
+          {
+            auth: {
+              username: "socialdistribution_t18",
+              password: "c404t18"
+            }
+          });
       } else {
         // remote
-        axios.post(`service/author/${author.id}/inbox/`, data);
+        axios.post(`service/author/${author.id}/inbox/`, data,
+          {
+            auth: {
+              username: "socialdistribution_t18",
+              password: "c404t18"
+            }
+          });
       }
     }
   }
@@ -138,13 +174,13 @@ class PostCard extends Component {
     var login_id = this.props.post.author.authorID;
     var author_id = this.props.authorID.authorID;
 
-    if (this.props.post.visibility === "FRIEND"){
-      if (login_id === author_id){
+    if (this.props.post.visibility === "FRIEND") {
+      if (login_id === author_id) {
         var visible = true;
-      }else{
+      } else {
         var visible = false;
       }
-    }else{
+    } else {
       var visible = true;
     }
 
@@ -152,9 +188,9 @@ class PostCard extends Component {
       <div style={{ border: "solid 1px grey" }}>
         <Button color="primary" variant="outlined" className="reshareBtn" style={{ margin: 5 }}
           onClick={() => this.reshare(author_id)}>
-            Reshare with {this.getShareText()}
+          Reshare with {this.getShareText()}
         </Button>
-        
+
         <h1>Author: {this.props.post.author.displayName}</h1>
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
@@ -168,10 +204,10 @@ class PostCard extends Component {
               {
                 this.state.comments.map((comment, index) => {
                   return (
-                    visible? 
-                    <div key={index}>
-                      <CommentCard content={comment} />
-                    </div>:null
+                    visible ?
+                      <div key={index}>
+                        <CommentCard content={comment} />
+                      </div> : null
                   );
                 })
               }
