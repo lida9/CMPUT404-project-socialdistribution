@@ -13,7 +13,7 @@ class AccessPermission(permissions.BasePermission):
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
         token_type, _, credentials = auth_header.partition(' ')
 
-        expected = base64.b64encode(b'socialdistribution_t18:c404t18').decode()
+        expected = base64.b64encode(b'socialdistribution_t18:team18').decode()
         if token_type == 'Basic' and credentials == expected:
             return True
         else:
@@ -29,7 +29,7 @@ class CustomAuthentication(authentication.BaseAuthentication):
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
         token_type, _, credentials = auth_header.partition(' ')
 
-        expected = base64.b64encode(b'socialdistribution_t18:c404t18').decode()
+        expected = base64.b64encode(b'socialdistribution_t18:team18').decode()
         if token_type == 'Basic' and credentials == expected:
             return (True, _)
         else:
