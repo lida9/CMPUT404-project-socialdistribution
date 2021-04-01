@@ -20,6 +20,9 @@ class CustomAuthentication(authentication.BaseAuthentication):
 
         expected = base64.b64encode(b'socialdistribution_t18:c404t18').decode()
         if token_type == 'Basic' and credentials == expected:
-            return (True, _)
+            return (True, None)
         else:
             return None
+
+    def authenticate_header(self, request):
+        return '{"username" : <username>, "password" : <password>}'
