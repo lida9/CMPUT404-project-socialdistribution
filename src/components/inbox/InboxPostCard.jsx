@@ -106,6 +106,13 @@ class PostCard extends Component {
     return this.props.post.id
   }
 
+  getPostAuthorID = () => {
+    if ("postID" in this.props.post) {
+      return this.props.post.authorID;
+    } 
+    return this.props.post.author.id;
+  }
+
   reshare = async (authorID) => {
     if (this.props.post.visibility === "PUBLIC") {
       // get logged in author's followers
@@ -157,7 +164,7 @@ class PostCard extends Component {
         {
           this.state.showComments ?
             <div>
-              <CommentForm postID={this.getPostID()} location={"/"} />
+              <CommentForm postID={this.getPostID()} postAuthorID={this.getPostAuthorID()} location={"/"} />
               {
                 this.state.comments.map((comment, index) => {
                   return (

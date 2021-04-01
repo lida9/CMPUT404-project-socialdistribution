@@ -165,7 +165,7 @@ class PostCard extends Component {
         {
           this.state.showComments ?
             <div>
-              <CommentForm postID={this.props.post.postID} location={"/aboutme"} />
+              <CommentForm postID={this.props.post.postID} postAuthorID={this.props.post.authorID} location={"/aboutme"} />
               {
                 this.props.post.comment_list.map((comment, index) => {
 
