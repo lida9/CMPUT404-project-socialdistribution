@@ -147,7 +147,13 @@ class PostCard extends Component {
     }
     var authors = res.data.items;
     for (let author of authors) {
-      let data = { "type": "post", "postID": this.props.post.postID };
+      if ("postID" in this.props.post) {
+        // local post
+        var data = { "type": "post", "postID": this.props.post.postID, "authorID": this.props.post.authorID };
+      } else {
+        // remote post
+        var data = { "type": "post", "postID": this.props.post.id, "authorID": this.props.post.author.id };
+      }
       if ("authorID" in author) {
         // local
         axios.post(`service/author/${author.authorID}/inbox/`, data,
