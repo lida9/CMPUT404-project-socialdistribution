@@ -5,7 +5,7 @@ from rest_framework import status
 from socialdistribution.models import *
 from socialdistribution.serializers import *
 import requests
-from .helper import is_valid_node, get_list_ids, find_remote_author_by_id
+from .helper import is_valid_node, get_list_ids, find_remote_author_by_id, get_followings_objects
 from .permission import AccessPermission, CustomAuthentication
 import json
 
@@ -21,22 +21,25 @@ def inbox_detail(request, authorID):
     if request.method == 'GET':
         obj, created = Inbox.objects.get_or_create(authorID=authorID)
         serializer = InboxSerializer(obj)
-        return Response(serializer.data)
+        output = serializer.data
+        followings = get_followings_objects(authorID)
+        for f in followings:
+            if "authorID" not in f.keys():
+                # remote author, get posts
+                resp = requests.get('https://citrusnetwork.herokuapp.com/service/author/'+f['id']+'/posts', auth=('CitrusNetwork','oranges')).json()
+                output["items"] = resp["posts"] + output["items"]
+
+        return Response(output)
 
     elif request.method == 'POST':
         content_type = request.data['type'] # post/follow/like
 
         if content_type == 'post':
             # get post object
-            try:
-                postID = request.data['postID']
-                post = Post.objects.get(postID=postID)
-                item_serializer = PostSerializer(post)
-                data = item_serializer.data
-            except Post.DoesNotExist:
-                # get post from remote
-                url = 'https://citrusnetwork.herokuapp.com/service/author/{}/posts/{}'.format(authorID, postID)
-                data = requests.get(url, auth=('CitrusNetwork','oranges')).json()
+            postID = request.data['postID']
+            post = Post.objects.get(postID=postID)
+            item_serializer = PostSerializer(post)
+            data = item_serializer.data
 
             # add to author's inbox
             try:
