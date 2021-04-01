@@ -69,13 +69,17 @@ class PostCard extends Component {
   }
 
   getComments = async (page = 1) => {
-    try {
-      const post = this.props.post;
-      const res = await axios.get(`service/author/${post.author.authorID}/posts/${post.postID}/comments/`,
-        { params: { page: page } });
-      this.setState({ comments: res.data.comments });
-    } catch (e) {
-      console.log(e);
+    const post = this.props.post;
+    if ("postID" in post) {
+      try {
+        const res = await axios.get(`service/author/${post.author.authorID}/posts/${post.postID}/comments/`,
+          { params: { page: page } });
+        this.setState({ comments: res.data.comments });
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      this.setState({ comments: post.comments });
     }
   }
 
@@ -93,6 +97,13 @@ class PostCard extends Component {
     } else {
       return "friends"
     }
+  }
+
+  getPostID = () => {
+    if ("postID" in this.props.post) {
+      return this.props.post.postID
+    } 
+    return this.props.post.id
   }
 
   reshare = async (authorID) => {
@@ -146,7 +157,7 @@ class PostCard extends Component {
         {
           this.state.showComments ?
             <div>
-              <CommentForm postID={this.props.post.postID} location={"/"} />
+              <CommentForm postID={this.getPostID()} location={"/"} />
               {
                 this.state.comments.map((comment, index) => {
                   return (
