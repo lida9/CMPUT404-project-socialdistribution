@@ -20,11 +20,26 @@ def comment_view(request, author_write_article_ID, postID):
         return Response({"message":"Node not allowed"}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == "GET":
-        paginator = CommentPagination()
-        comments = Comment.objects.filter(postID=postID).order_by('-published')
-        paginated = paginator.paginate_queryset(comments, request)
-        serializer = CommentSerializer(paginated, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        try:
+            post = Post.objects.get(postID=postID)
+            paginator = CommentPagination()
+            comments = Comment.objects.filter(postID=postID).order_by('-published')
+            paginated = paginator.paginate_queryset(comments, request)
+            serializer = CommentSerializer(paginated, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        except Post.DoesNotExist:
+            get_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comment/"
+            response = requests.get(get_url, auth=('CitrusNetwork','oranges'))
+            if response.status_code== 200:
+                response_data = json.loads(response.content.decode("utf-8"))
+                return Response(response_data, status=status.HTTP_200_OK)
+            elif 400 <= response.status_code < 500:
+                return Response({'message':'some error occurred'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'message':'service unavailable'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
+
+
+        
 
     elif request.method == "POST":
         # create a new comment
@@ -48,8 +63,7 @@ def comment_view(request, author_write_article_ID, postID):
         except Post.DoesNotExist:
             # remote post
             new_data = {'comment':data['comment']}
-
-            post_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comment"
+            post_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comment/"
             response = requests.post(post_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
             if response.status_code < 400:
                 return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
