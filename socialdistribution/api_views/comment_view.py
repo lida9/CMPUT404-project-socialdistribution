@@ -50,8 +50,7 @@ def comment_view(request, author_write_article_ID, postID):
             new_data = {'comment':data['comment']}
             post_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comment/"
             response = requests.post(post_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
-            if response.status_code == 200:
+            if response.status_code < 400:
                 return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
             else:
-                print(response.status_code)
                 return Response({'message':'some error occurred'}, status=status.HTTP_400_BAD_REQUEST)

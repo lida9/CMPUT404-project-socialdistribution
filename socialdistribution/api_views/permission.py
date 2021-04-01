@@ -2,14 +2,8 @@ from rest_framework import permissions
 from rest_framework import authentication
 import base64
 
-local = ["http://127.0.0.1:8000/", "http://localhost:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]
 class AccessPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        # check if host
-        host = request.build_absolute_uri("/")
-        if host in local:
-            return True
-
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
         token_type, _, credentials = auth_header.partition(' ')
 
@@ -21,11 +15,6 @@ class AccessPermission(permissions.BasePermission):
 
 class CustomAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        # check if host
-        host = request.build_absolute_uri("/")
-        if host in local:
-            return (True, True)
-
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
         token_type, _, credentials = auth_header.partition(' ')
 

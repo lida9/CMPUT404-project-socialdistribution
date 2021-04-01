@@ -6,6 +6,7 @@ from socialdistribution.models import Author, Follow
 from socialdistribution.serializers import AuthorSerializer, FollowSerializer
 from .helper import is_valid_node, get_followers_objects, get_followings_objects
 from .permission import AccessPermission, CustomAuthentication
+import requests, json
 
 @api_view(['GET'])
 @authentication_classes([CustomAuthentication])
@@ -48,6 +49,17 @@ def follower(request, authorID, foreignAuthorID):
         except Follow.DoesNotExist:
             # not a follower
             return Response({'message':"Not a follower"}, status=status.HTTP_200_OK)
-        else:
+
+        else: # indeed a follower
             follow_obj.delete()
-            return Response({'message':"Success"}, status=status.HTTP_200_OK)
+
+            try: # if the follower is local, do nothing
+                follow_author = Author.objects.get(authorID=foreignAuthorID) # get the author being followed
+
+            except Author.DoesNotExist: # if the follower is remote, need to put to their server
+                url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/followers/' + foreignAuthorID + '/'
+                r = requests.delete(url, auth=('CitrusNetwork','oranges'))
+                if r.status_code == 200:
+                    return Response({'message':'Success!'}, status=status.HTTP_200_OK)
+                    
+            return Response({'message':'Success!'}, status=status.HTTP_200_OK)

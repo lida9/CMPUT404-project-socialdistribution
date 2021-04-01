@@ -9,19 +9,21 @@ class CommentForm extends Component {
     author_write_comment_ID: "",
     comment: "",
     currentPostID: "",
+    postAuthorID: ""
   }
 
   componentDidMount = () => {
-    const { authorID, postID } = this.props;
+    const { authorID, postID, postAuthorID } = this.props;
     this.setState({
       author_write_comment_ID: authorID.authorID,
-      currentPostID: postID
+      currentPostID: postID,
+      postAuthorID: postAuthorID
     });
   }
 
   handlePostComment = async () => {
-    const { author_write_comment_ID, comment, currentPostID } = this.state;
-    await axios.post(`service/author/${author_write_comment_ID}/posts/${currentPostID}/comments/`, { author_write_comment_ID, comment });
+    const { author_write_comment_ID, comment, currentPostID, postAuthorID } = this.state;
+    await axios.post(`service/author/${postAuthorID}/posts/${currentPostID}/comments/`, { author_write_comment_ID, comment });
     window.location = this.props.location;
   }
 
