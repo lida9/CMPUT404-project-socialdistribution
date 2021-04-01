@@ -48,8 +48,7 @@ def comment_view(request, author_write_article_ID, postID):
         except Post.DoesNotExist:
             # remote post
             new_data = {'comment':data['comment']}
-
-            post_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comments"
+            post_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comment/"
             response = requests.post(post_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
             if response.status_code == 200:
                 return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
