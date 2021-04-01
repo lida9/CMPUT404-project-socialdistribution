@@ -57,20 +57,20 @@ class PostForm extends Component {
   sendToFollowers = async (authorID, postID, visibility) => {
     if (visibility === "PUBLIC") {
       // get followers
-      var res = await axios.get(`service/author/${authorID}/followers/`);
+      var res = await axios.get(`service/author/${authorID}/followers/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
     } else {
       // get friends
-      var res = await axios.get(`service/author/${authorID}/friends/`);
+      var res = await axios.get(`service/author/${authorID}/friends/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
     }
     var authors = res.data.items;
     for (let author of authors) {
-      let data = { "type": "post", "postID": postID};
+      let data = { "type": "post", "postID": postID };
       if ("authorID" in author) {
         // local
-        axios.post(`service/author/${author.authorID}/inbox/`, data);
+        axios.post(`service/author/${author.authorID}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
       } else {
         // remote
-        axios.post(`service/author/${author.id}/inbox/`, data);
+        axios.post(`service/author/${author.id}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
       }
     }
   }
@@ -97,7 +97,7 @@ class PostForm extends Component {
 
     if (title && description && content) {
       try {
-        var res = await axios.post(`service/author/${authorID.authorID}/posts/`, { title, source, origin, description, contentType, content, visibility, unlisted });
+        var res = await axios.post(`service/author/${authorID.authorID}/posts/`, { title, source, origin, description, contentType, content, visibility, unlisted }, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
         this.setState({ show: false });
         // window.location = "/aboutme";
         this.props.getPosts();

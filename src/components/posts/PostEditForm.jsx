@@ -71,7 +71,7 @@ class PostForm extends Component {
 
       try {
         console.log({ title, source, origin, description, contentType, content, visibility, unlisted });
-        await axios.post(`service/author/${authorID.authorID}/posts/${this.props.postID}/`, { title, source, origin, description, contentType, content, visibility, unlisted });
+        await axios.post(`service/author/${authorID.authorID}/posts/${this.props.postID}/`, { title, source, origin, description, contentType, content, visibility, unlisted }, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
         window.location = "/aboutme";
 
         // this.sendToFollowers(authorID.authorID, res.data.postID);

@@ -23,7 +23,13 @@ class CommentForm extends Component {
 
   handlePostComment = async () => {
     const { author_write_comment_ID, comment, currentPostID, postAuthorID } = this.state;
-    await axios.post(`service/author/${postAuthorID}/posts/${currentPostID}/comments/`, { author_write_comment_ID, comment });
+    await axios.post(`service/author/${postAuthorID}/posts/${currentPostID}/comments/`, { author_write_comment_ID, comment },
+      {
+        auth: {
+          username: "socialdistribution_t18",
+          password: "c404t18"
+        }
+      });
     window.location = this.props.location;
   }
 

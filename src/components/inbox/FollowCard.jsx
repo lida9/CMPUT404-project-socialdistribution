@@ -33,8 +33,14 @@ class FollowCard extends Component {
             "type": "accept",
         }
         try {
-            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`, post_information)
-            if (doc.status == 200) {
+            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`, post_information,
+                {
+                    auth: {
+                        username: "socialdistribution_t18",
+                        password: "c404t18"
+                    }
+                })
+            if (doc.status === 200) {
                 this.setCookie("accepted", author_id, follower_id);
                 this.setState({ clicked: "Accepted" });
             }
@@ -57,8 +63,14 @@ class FollowCard extends Component {
             "type": "reject",
         }
         try {
-            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`, post_information)
-            if (doc.status == 200) {
+            let doc = await axios.post(`service/author/${author_id}/inbox/friendrequest/${follower_id}/`, post_information,
+                {
+                    auth: {
+                        username: "socialdistribution_t18",
+                        password: "c404t18"
+                    }
+                })
+            if (doc.status === 200) {
                 this.setCookie("rejected", author_id, follower_id);
                 this.setState({ clicked: "Rejected" });
             }

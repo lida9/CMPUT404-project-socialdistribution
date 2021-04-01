@@ -10,7 +10,12 @@ class PublicPosts extends Component {
 
   componentDidMount = async () => {
     if (this.props.authorID) {
-      const doc = await axios.get("/service/allposts/")
+      const doc = await axios.get("/service/allposts/", {
+        auth: {
+          username: "socialdistribution_t18",
+          password: "c404t18"
+        }
+      })
       this.setState({ allposts: doc.data.posts })
     } else {
       alert("Log in to see more post")

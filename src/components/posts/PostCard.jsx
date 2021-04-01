@@ -39,7 +39,7 @@ class PostCard extends Component {
       "postID": post_id
     }
     try {
-      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information)
+      let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information, { auth: { username: "socialdistribution_t18", password: "c404t18" } })
       if (doc.status === 200) {
         this.setCookie("click", post_id);
         this.disabled = true;
@@ -117,7 +117,7 @@ class PostCard extends Component {
       window.alert("you cannot delete this post")
     } else {
       try {
-        let doc = await axios.delete(`service/author/${post_author_id}/posts/${post_id}/`)
+        let doc = await axios.delete(`service/author/${post_author_id}/posts/${post_id}/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } })
         if (doc.status === 200) {
           window.location = '/aboutme'
         }
@@ -137,16 +137,16 @@ class PostCard extends Component {
     }
     var login_id = this.props.post.author.authorID;
     var author_id = this.props.authorID.authorID;
-    
-    if (this.props.post.visibility === "FRIEND"){
-      if (login_id === author_id){
+
+    if (this.props.post.visibility === "FRIEND") {
+      if (login_id === author_id) {
         var visible = true;
-      }else{
+      } else {
         var visible = false;
       }
-      
 
-    }else{
+
+    } else {
       var visible = true;
     }
 
@@ -170,10 +170,10 @@ class PostCard extends Component {
                 this.props.post.comment_list.map((comment, index) => {
 
                   return (
-                    visible? 
-                    <div key={index}>
-                      <CommentCard content={comment} />
-                    </div>:null
+                    visible ?
+                      <div key={index}>
+                        <CommentCard content={comment} />
+                      </div> : null
                   );
                 })
               }

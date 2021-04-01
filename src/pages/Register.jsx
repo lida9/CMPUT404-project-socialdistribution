@@ -23,7 +23,12 @@ class Register extends Component {
       if (confirm === password) {
         console.log({ email, username, github, password });
         try {
-          const doc = await axios.post("service/author/", { email, username, github, password });
+          const doc = await axios.post("service/author/", { email, username, github, password }, {
+            auth: {
+              username: "socialdistribution_t18",
+              password: "c404t18"
+            }
+          });
           this.props.setCurrentUser(doc.data);
 
           window.location = "/";

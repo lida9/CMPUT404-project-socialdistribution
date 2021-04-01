@@ -16,7 +16,12 @@ class Home extends Component {
   componentDidMount = async () => {
     const { authorID } = this.props;
     if (authorID) {
-      const res = await axios.get(`service/author/${authorID.authorID}/`)
+      const res = await axios.get(`service/author/${authorID.authorID}/`, {
+        auth: {
+          username: "socialdistribution_t18",
+          password: "c404t18"
+        }
+      })
       this.setState({ currentUser: res.data })
       this.getInbox();
       // setInterval(this.getInbox, 10 * 60 * 1000);
@@ -36,7 +41,12 @@ class Home extends Component {
   getInbox = async () => {
     try {
       const { authorID } = this.props;
-      const res = await axios.get(`service/author/${authorID.authorID}/inbox/`);
+      const res = await axios.get(`service/author/${authorID.authorID}/inbox/`, {
+        auth: {
+          username: "socialdistribution_t18",
+          password: "c404t18"
+        }
+      });
       this.setState({ inbox: res.data.items });
     } catch (e) {
       console.log(e);
@@ -46,7 +56,12 @@ class Home extends Component {
   clearInbox = async () => {
     try {
       const { authorID } = this.props;
-      const res = await axios.delete(`service/author/${authorID.authorID}/inbox/`);
+      const res = await axios.delete(`service/author/${authorID.authorID}/inbox/`, {
+        auth: {
+          username: "socialdistribution_t18",
+          password: "c404t18"
+        }
+      });
       this.setState({ inbox: [] });
     } catch (e) {
       console.log(e);
@@ -72,10 +87,10 @@ class Home extends Component {
                 Inbox
               </h1>
               <Button
-              color="primary"
-              variant="outlined"
-              onClick={this.getInbox}
-              style={{ margin: 10 }}
+                color="primary"
+                variant="outlined"
+                onClick={this.getInbox}
+                style={{ margin: 10 }}
               >
                 Refresh Inbox
               </Button>

@@ -36,7 +36,7 @@ class UpdateProfileForm extends Component {
         if (github) {
           data.github = github;
         }
-        await axios.post(`service/author/${authorID.authorID}/`, data);
+        await axios.post(`service/author/${authorID.authorID}/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
 
         console.log(email, password, displayName, github);
         this.handleShow();
