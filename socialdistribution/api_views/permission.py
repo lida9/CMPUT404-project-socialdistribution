@@ -23,6 +23,7 @@ class CustomAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         # check if host
         host = request.build_absolute_uri("/")
+        print(host)
         if host in local:
             return (True, True)
 
