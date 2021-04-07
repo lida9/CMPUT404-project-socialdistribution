@@ -6,7 +6,7 @@ from socialdistribution.models import Author, Follow
 from socialdistribution.serializers import AuthorSerializer, FollowSerializer
 from .helper import is_valid_node, get_followers_objects, get_followings_objects
 from .permission import AccessPermission, CustomAuthentication
-import requests, json
+
 
 @api_view(['GET'])
 @authentication_classes([CustomAuthentication])

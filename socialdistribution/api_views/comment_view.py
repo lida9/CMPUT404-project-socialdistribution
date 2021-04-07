@@ -29,7 +29,7 @@ def comment_view(request, author_write_article_ID, postID):
             return paginator.get_paginated_response(serializer.data)
         except Post.DoesNotExist:
             get_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comment/"
-            response = requests.get(get_url, auth=('CitrusNetwork','oranges'))
+            response = requests.get(get_url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
             if response.status_code== 200:
                 response_data = json.loads(response.content.decode("utf-8"))
                 return Response(response_data, status=status.HTTP_200_OK)
@@ -64,7 +64,7 @@ def comment_view(request, author_write_article_ID, postID):
             # remote post
             new_data = {'comment':data['comment']}
             post_url = 'https://citrusnetwork.herokuapp.com/service/author/' + str(author_write_article_ID) + '/posts/' + str(postID) + "/comment/"
-            response = requests.post(post_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
+            response = requests.post(post_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
             if response.status_code < 400:
                 return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
             else:

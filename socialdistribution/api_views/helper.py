@@ -21,7 +21,7 @@ def is_valid_node(request):
     return True
 
 def get_list_ids():
-    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/', auth=('CitrusNetwork','oranges')).json()
+    req = requests.get('https://citrusnetwork.herokuapp.com/service/authors/', auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
     ids = []
     authors = req["items"]
     for i in authors:
@@ -29,7 +29,7 @@ def get_list_ids():
     return ids
 
 def find_remote_author_by_id(id):
-    req = requests.get('https://citrusnetwork.herokuapp.com/service/author/'+id+'/', auth=('CitrusNetwork','oranges')).json()
+    req = requests.get('https://citrusnetwork.herokuapp.com/service/author/'+id+'/', auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
     return req
 
 def get_followers_objects(authorID):
