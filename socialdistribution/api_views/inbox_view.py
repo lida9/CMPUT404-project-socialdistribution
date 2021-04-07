@@ -26,7 +26,7 @@ def inbox_detail(request, authorID):
         for f in followings:
             if "authorID" not in f.keys():
                 # remote author, get posts
-                resp = requests.get('https://citrusnetwork.herokuapp.com/service/author/'+f['id']+'/posts', auth=('CitrusNetwork','oranges')).json()
+                resp = requests.get('https://citrusnetwork.herokuapp.com/service/author/'+f['id']+'/posts', auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
                 output["items"] = resp["posts"] + output["items"]
 
         return Response(output)
@@ -44,7 +44,7 @@ def inbox_detail(request, authorID):
             except Post.DoesNotExist:
                 # get post from remote
                 url = 'https://citrusnetwork.herokuapp.com/service/author/{}/posts/{}'.format(request.data['authorID'], postID)
-                data = requests.get(url, auth=('CitrusNetwork','oranges')).json()
+                data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
 
             # add to author's inbox
             try:
@@ -56,7 +56,7 @@ def inbox_detail(request, authorID):
             except Author.DoesNotExist:
                 # remote author
                 url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
-                r = requests.post(url, data=json.dumps(data), auth=('CitrusNetwork','oranges'))
+                r = requests.post(url, data=json.dumps(data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
                 if r.status_code == 201:
                     return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
                 else:
@@ -86,7 +86,7 @@ def inbox_detail(request, authorID):
                 new_data['object'] = remote_object
 
                 url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
-                r = requests.post(url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
+                r = requests.post(url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
 
                 if r.status_code < 400:
                     return Response({'message':'Success!'}, status=status.HTTP_200_OK)
@@ -160,7 +160,7 @@ def inbox_detail(request, authorID):
                     return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
                 except Author.DoesNotExist:
                     get_author_url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID
-                    r_author = requests.get(get_author_url, auth=('CitrusNetwork','oranges'))
+                    r_author = requests.get(get_author_url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
                     if r_author.status_code == 200:
                         # author_information = r_author.content
                         # author_information = author_information.decode("utf-8")
@@ -185,7 +185,7 @@ def inbox_detail(request, authorID):
                         new_data['object'] = "https://www.citrusnetwork.herokuapp.com/service/author/"+ authorID +"/posts/"+postID
 
                         inbox_url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
-                        response = requests.post(inbox_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
+                        response = requests.post(inbox_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
                         if response.status_code == 201:
                             return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
                         else:
@@ -258,7 +258,7 @@ def friendrequest(request, authorID, foreignAuthorID):
                 new_data['object'] = remote_object
 
                 url = 'https://citrusnetwork.herokuapp.com/service/author/' + foreignAuthorID + '/inbox/'
-                r = requests.post(url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'))
+                r = requests.post(url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
 
                 if r.status_code < 400:
                     return Response({'message':'Success!'}, status=status.HTTP_200_OK)

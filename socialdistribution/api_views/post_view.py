@@ -9,8 +9,8 @@ from socialdistribution.serializers import PostSerializer, AuthorSerializer
 from socialdistribution.pagination import PostPagination
 from .helper import is_valid_node
 from .permission import AccessPermission, CustomAuthentication
-import requests
-import json
+import requests, json
+
 
 @api_view(['GET', 'POST'])
 @authentication_classes([CustomAuthentication])
@@ -119,5 +119,5 @@ def github_view(request,authorID):
         author = get_object_or_404(Author,authorID = authorID)
         username = author.github
         url = 'https://api.github.com/users/'+ username + '/events'
-        git_msg = requests.get(url).json()
+        git_msg = requests.get(url, headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
         return Response(git_msg, status=status.HTTP_200_OK)
