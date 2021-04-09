@@ -121,6 +121,7 @@ class LikePostSerializer(serializers.ModelSerializer):
             author_data = author_like_serializer.data
         except Author.DoesNotExist:
             url = 'https://citrusnetwork.herokuapp.com/service/author/'+instance.author_like_ID+'/'
+            print(instance.author_like_ID)
             author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
 
         del response['author_write_article_ID']
