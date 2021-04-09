@@ -143,7 +143,7 @@ def inbox_detail(request, authorID):
                 data['author_write_article_ID'] = authorID
                 # get author who was liked
                 try: 
-                    Author.objects.get(authorID = authorID)
+                    Author.objects.get(authorID=authorID)
                     # get the author who sends the like
                     author_like_ID = data['author_like_ID']
                     item_serializer = LikePostSerializer(data=data)
@@ -162,20 +162,7 @@ def inbox_detail(request, authorID):
                     get_author_url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID
                     r_author = requests.get(get_author_url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
                     if r_author.status_code == 200:
-                        # author_information = r_author.content
-                        # author_information = author_information.decode("utf-8")
-                        # data['author'] = author_information
-                        # data['type'] = 'Like'
-                        # author_like_ID = data['author_like_ID']
-                        # author_Like = Author.objects.get(authorID = author_like_ID)
                         postID = data["postID"]
-                        # data['summary'] = author_Like.username + " Likes your post"
-                        # data['@context'] = "https://www.citrusnetwork.herokuapp.com/service/author/" + authorID + "/view-post/" + postID + "/"
-                        # data['object'] = "http://127.0.0.1:5454/author/"+ authorID +"/posts/"+postID
-
-                        # del data['author_like_ID']
-                        # del data['author_write_article_ID']
-                        # del data['postID']
                         new_data = {"type":"Like"}
                         author_who_liked = Author.objects.get(authorID = data['author_like_ID'])
                         serializer = AuthorSerializer(author_who_liked)

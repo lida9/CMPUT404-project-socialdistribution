@@ -110,14 +110,13 @@ class InboxSerializer(serializers.ModelSerializer):
 class LikePostSerializer(serializers.ModelSerializer):
     object = serializers.URLField(source='get_like_model',required=False)
     author = serializers.CharField(source='get_author',required=False)
-    summary = serializers.SerializerMethodField("get_summary")
     at_context = serializers.URLField(source='get_at_context',required=False)
 
     def to_representation(self, instance):
         response = super(LikePostSerializer, self).to_representation(instance)
         #get author from author ID
         try:
-            author_like = Author.objects.get(authorID = instance.author_like_ID)
+            author_like = Author.objects.get(authorID=instance.author_like_ID)
             author_like_serializer = AuthorSerializer(author_like)
             author_data = author_like_serializer.data
         except Author.DoesNotExist:
@@ -134,12 +133,6 @@ class LikePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = LikePost
         fields = ['at_context','type','author','summary','published','author_write_article_ID','author_like_ID','postID','object']
-
-    def get_summary(self,instance):
-        id = instance.author_like_ID
-        author_like = Author.objects.get(authorID = id)
-        summary = author_like.username + " likes your post"
-        return summary
 
 class LikeCommentSerializer(serializers.ModelSerializer):
     object = serializers.URLField(source='get_like_model',required=False)
