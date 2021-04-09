@@ -93,7 +93,7 @@ class CommentSerializer(serializers.ModelSerializer):
         except Author.DoesNotExist:
             url = 'https://citrusnetwork.herokuapp.com/service/author/'+id+'/'
             author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
-            if author_data != None:
+            if author_data.status_code != 404:
                 author_data = author_data.json()
             else:
                 author_data = {'displayName':"An author"}
@@ -126,7 +126,7 @@ class LikePostSerializer(serializers.ModelSerializer):
         except Author.DoesNotExist:
             url = 'https://citrusnetwork.herokuapp.com/service/author/'+instance.author_like_ID+'/'
             author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
-            if author_data != None:
+            if author_data.status_code != 404:
                 author_data = author_data.json()
             else:
                 author_data = {'displayName':"An author"}
