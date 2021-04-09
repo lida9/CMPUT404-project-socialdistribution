@@ -92,7 +92,11 @@ class CommentSerializer(serializers.ModelSerializer):
             author_data = author_serializer.data
         except Author.DoesNotExist:
             url = 'https://citrusnetwork.herokuapp.com/service/author/'+id+'/'
-            author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
+            author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
+            if author_data != None:
+                author_data = author_data.json()
+            else:
+                author_data = {'displayName':"An author"}
 
         summary = author_data['displayName'] + " comments on your post"
         return summary
@@ -121,8 +125,11 @@ class LikePostSerializer(serializers.ModelSerializer):
             author_data = author_like_serializer.data
         except Author.DoesNotExist:
             url = 'https://citrusnetwork.herokuapp.com/service/author/'+instance.author_like_ID+'/'
-            print(instance.author_like_ID)
-            author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"}).json()
+            author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
+            if author_data != None:
+                author_data = author_data.json()
+            else:
+                author_data = {'displayName':"An author"}
 
         del response['author_write_article_ID']
         del response['postID']
