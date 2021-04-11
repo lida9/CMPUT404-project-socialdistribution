@@ -59,7 +59,12 @@ class AboutMe extends Component {
           {
             userPosts.length !== 0 ?
               userPosts.map((post, index) => {
-                return <PostCard key={index} post={post} />
+                if (!post.unlisted) {
+                  return <PostCard key={index} post={post} />
+                } else {
+                  return null;
+                }
+
               })
               :
               null
