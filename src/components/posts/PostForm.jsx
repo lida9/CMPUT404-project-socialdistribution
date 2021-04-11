@@ -76,13 +76,7 @@ class PostForm extends Component {
   }
 
   handlePost = async () => {
-    const {
-      title,
-      source,
-      origin,
-      description,
-      visibility,
-      unlisted } = this.state;
+    const { title, source, origin, description, visibility, unlisted } = this.state;
     const { authorID } = this.props;
 
     if (this.state.contentType === "image") {
@@ -99,9 +93,16 @@ class PostForm extends Component {
       try {
         var res = await axios.post(`service/author/${authorID.authorID}/posts/`, { title, source, origin, description, contentType, content, visibility, unlisted }, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
         this.setState({ show: false });
-        // window.location = "/aboutme";
+        console.log("post res:", res.data.postID);
         this.props.getPosts();
-        this.sendToFollowers(authorID.authorID, res.data.postID, visibility);
+        if (!unlisted) { // unlisted === false
+          this.sendToFollowers(authorID.authorID, res.data.postID, visibility);
+        }
+
+        if (unlisted) {
+          alert(`Remember this ID! You will not see this again! \n ${res.data.postID}`);
+        }
+
       } catch (err) {
         console.log(err.message);
       }
@@ -111,7 +112,7 @@ class PostForm extends Component {
   }
 
   render() {
-    const { show, title, description, content, contentType } = this.state;
+    const { show, title, description, content, contentType, unlisted } = this.state;
 
     return (
       <div>
@@ -180,7 +181,9 @@ class PostForm extends Component {
                       <option value="PUBLIC">PUBLIC</option>
                       <option value="FRIEND">FRIEND</option>
                     </select>
-
+                    <label>Unlisted:</label>
+                    <input type="checkbox" checked={unlisted} onChange={(e) => this.setState({ unlisted: e.target.checked })} />
+                    {/* {JSON.stringify(unlisted)} */}
                     <Button
                       id="post-btn"
                       style={{ marginTop: 15 }}

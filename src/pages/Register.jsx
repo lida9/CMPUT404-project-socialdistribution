@@ -31,7 +31,7 @@ class Register extends Component {
           });
           this.props.setCurrentUser(doc.data);
 
-          window.location = "/login";
+          window.location = "/";
         } catch (error) {
           if (error.message === "Request failed with status code 400") {
             console.log("invalid data")

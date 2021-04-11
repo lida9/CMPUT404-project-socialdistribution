@@ -11,6 +11,7 @@ import AllFollowers from './pages/AllFollowers';
 import AllFriends from './pages/AllFriends';
 import AllFollowings from './pages/AllFollowings';
 import GitActivities from './pages/GitActivities';
+import UnlistedPost from './pages/UnlistedPost';
 import NotFound from './components/errors/NotFound';
 import ErrorBoundary from './components/errors/ErrorBoundary';
 
@@ -33,6 +34,7 @@ class App extends Component {
               <Route exact path="/author/followings" component={AllFollowings} />
               <Route exact path="/author/gitactivities" component={GitActivities} />
               <Route exact path="/public" component={PublicPost} />
+              <Route path="/post/unlisted/:id" component={UnlistedPost} />
               <Route component={NotFound} />
             </Switch>
           </Suspense>
