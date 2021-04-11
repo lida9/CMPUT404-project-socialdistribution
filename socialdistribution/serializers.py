@@ -144,22 +144,30 @@ class LikePostSerializer(serializers.ModelSerializer):
 
 class LikeCommentSerializer(serializers.ModelSerializer):
     object = serializers.URLField(source='get_like_model',required=False)
-    #author = serializers.CharField(source='get_author',required=False)
-    #summary = serializers.SerializerMethodField("get_summary")
-    #author_write_comment_ID = serializers.SerializerMethodField("get_author_write_comment_ID")
     at_context = serializers.URLField(source='get_at_context',required=False)
 
     def to_representation(self, instance):
         response = super(LikeCommentSerializer, self).to_representation(instance)
         #get author from author ID
-        author_like = Author.objects.get(authorID = instance.author_like_ID)
-        author_like_serializer = AuthorSerializer(author_like)
+        try:
+            author_like = Author.objects.get(authorID=instance.author_like_ID)
+            author_like_serializer = AuthorSerializer(author_like)
+            author_data = author_like_serializer.data
+        except Author.DoesNotExist:
+            url = 'https://citrusnetwork.herokuapp.com/service/author/'+instance.author_like_ID+'/'
+            author_data = requests.get(url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
+            if author_data.status_code != 404:
+                author_data = author_data.json()
+            else:
+                author_data = {'displayName':"An author"}
+
+
         del response['author_write_article_ID']
         del response['commentID']
         del response['postID']
         del response['author_like_ID']
-        response['author'] = author_like_serializer.data # add author data
-        response['summary'] = author_like.username + " likes your comment"
+        response['author'] = author_data # add author data
+        response['summary'] = author_data['displayName'] + " likes your comment"
         #response['postID'] = str(response["postID"]) # convert UUID to string
         return response
 
@@ -167,10 +175,6 @@ class LikeCommentSerializer(serializers.ModelSerializer):
         model = LikeComment
         fields = ['at_context','type','published','author_write_article_ID','author_like_ID','commentID','postID','object']
 
-    def get_summary(self,instance):
-        author_like = Author.objects.get(authorID = instance.author_like_ID)
-        summary = author_like.username + " likes your comment"
-        return summary
     def get_author(self,instance):
         author_like = Author.objects.get(authorID = instance.author_like_ID)
         author_like_serializer = AuthorSerializer(author_like)
