@@ -170,6 +170,7 @@ def inbox_detail(request, authorID):
                         new_data['summary'] = author_who_liked.username + " Likes your post"
                         new_data['@context'] = "https://www.citrusnetwork.herokuapp.com/service/author/" + authorID + "/view-post/" + postID + "/"
                         new_data['object'] = "https://www.citrusnetwork.herokuapp.com/service/author/"+ authorID +"/posts/"+postID
+                        new_data['postID'] = postID
 
                         inbox_url = 'https://citrusnetwork.herokuapp.com/service/author/' + authorID + '/inbox/'
                         response = requests.post(inbox_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
@@ -184,6 +185,7 @@ def inbox_detail(request, authorID):
 
             elif("comment" in like_sum):
                 data['author_write_article_ID'] = authorID
+                postID = data["postID"]
                 commentID= data['commentID']
                 try: 
                     comment = Comment.objects.get(commentID = commentID)
@@ -218,6 +220,8 @@ def inbox_detail(request, authorID):
                         new_data['author'] = serializer.data
                         new_data['summary'] = author_who_liked.username + " Likes your comment"
                         new_data["@context"] =  "https://www.citrusnetwork.herokuapp.com/service/author/"+data['author_write_article_ID']+"/view-post/"+data["postID"]+"/comment/"+commentID+"/"
+                        new_data['postID'] = postID
+                        new_data['commentID'] = commentID
                         
                         inbox_url = 'https://citrusnetwork.herokuapp.com/service/author/' + data['author_write_article_ID'] + '/inbox/'
                         response = requests.post(inbox_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
