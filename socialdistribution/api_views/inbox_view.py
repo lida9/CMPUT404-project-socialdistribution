@@ -185,25 +185,50 @@ def inbox_detail(request, authorID):
             elif("comment" in like_sum):
                 data['author_write_article_ID'] = authorID
                 commentID= data['commentID']
-                comment = Comment.objects.get(commentID = commentID)
-                #get the author who write the comment and send like to their inbox
-                author_comment_ID = comment.author_write_comment_ID
-                # get author who likes and send to liked
-                author_like_ID = data['author_like_ID']
+                try: 
+                    comment = Comment.objects.get(commentID = commentID)
+                    #get the author who write the comment and send like to their inbox
+                    author_comment_ID = comment.author_write_comment_ID
+                    # get author who likes and send to liked
+                    author_like_ID = data['author_like_ID']
 
-                item_serializer = LikeCommentSerializer(data=data)
-                if item_serializer.is_valid():
-                    item_serializer.save() # save the item to the other form in db
-                else:
-                    return Response({'message':item_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                    item_serializer = LikeCommentSerializer(data=data)
+                    if item_serializer.is_valid():
+                        item_serializer.save() # save the item to the other form in db
+                    else:
+                        return Response({'message':item_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-                inbox, _ = Inbox.objects.get_or_create(authorID=author_comment_ID)
-                inbox.items.insert(0, item_serializer.data) # append to items list
-                inbox.save()
-                liked,_ = Liked.objects.get_or_create(authorID=author_like_ID)
-                liked.items.insert(0, item_serializer.data) # append to items list
-                liked.save()
-                return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+                    inbox, _ = Inbox.objects.get_or_create(authorID=author_comment_ID)
+                    inbox.items.insert(0, item_serializer.data) # append to items list
+                    inbox.save()
+                    liked,_ = Liked.objects.get_or_create(authorID=author_like_ID)
+                    liked.items.insert(0, item_serializer.data) # append to items list
+                    liked.save()
+                    return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+                except Comment.DoesNotExist:
+                    get_comment_url = "https://citrusnetwork.herokuapp.com/service/author/"+data['author_write_article_ID']+ "/posts/"+data["postID"]+"/comment/"
+                    r_comment = requests.get(get_comment_url, auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
+                    if r_comment.status_code == 200:
+                        author_who_liked = Author.objects.get(authorID = data['author_like_ID'])
+                        serializer = AuthorSerializer(author_who_liked)
+                        commentID = data['commentID']
+
+                        new_data = {"type":"Like"}
+                        new_data['object'] = "https://www.citrusnetwork.herokuapp.com/service/author/"+ data['author_write_article_ID'] +"/posts/"+data["postID"]+"/comment/"+commentID
+                        new_data['author'] = serializer.data
+                        new_data['summary'] = author_who_liked.username + " Likes your comment"
+                        new_data["@context"] =  "https://www.citrusnetwork.herokuapp.com/service/author/"+data['author_write_article_ID']+"/view-post/"+data["postID"]+"/comment/"+commentID+"/"
+                        
+                        inbox_url = 'https://citrusnetwork.herokuapp.com/service/author/' + data['author_write_article_ID'] + '/inbox/'
+                        response = requests.post(inbox_url, data=json.dumps(new_data), auth=('CitrusNetwork','oranges'), headers={'Referer': "https://cmput-404-socialdistribution.herokuapp.com/"})
+                        if response.status_code == 201:
+                            return Response({'message':'sent successfully!'}, status=status.HTTP_200_OK)
+                        else:
+                            return Response({'message':'some error occurred'}, status=status.HTTP_400_BAD_REQUEST)
+                    elif r_comment.status_code == 404:
+                        return Response({'message':'no comment found'}, status=status.HTTP_404_NOT_FOUND)
+                    else:
+                        return Response({'message':'service unavailable'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
 
     elif request.method == 'DELETE':
         inbox, created = Inbox.objects.get_or_create(authorID=authorID)
