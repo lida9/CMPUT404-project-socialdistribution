@@ -100,7 +100,7 @@ class PostForm extends Component {
         }
 
         if (unlisted) {
-          alert(`Remember this ID! You will not see this again! \n ${res.data.postID}`);
+          alert(`Remember this route! You will not see this again! \n /post/unlisted/${res.data.postID}`);
         }
 
       } catch (err) {
