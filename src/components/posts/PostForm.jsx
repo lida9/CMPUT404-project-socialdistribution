@@ -18,15 +18,15 @@ class PostForm extends Component {
       visibility: "PUBLIC",
       unlisted: false,
       imagePreview: null,
-      img: null
+      img: null,
+      privateToAuthor: "",
     };
     this.onImageChange = this.onImageChange.bind(this);
     this.chooseFile = React.createRef();
   }
 
 
-  componentDidMount = () => {
-  }
+  componentDidMount = () => { }
 
   onImageChange = event => {
     if (event.target.files && event.target.files[0]) {
@@ -113,7 +113,7 @@ class PostForm extends Component {
   }
 
   render() {
-    const { show, title, description, content, contentType, unlisted } = this.state;
+    const { show, title, description, content, contentType, unlisted, privateToAuthor } = this.state;
 
     return (
       <div>
@@ -166,7 +166,7 @@ class PostForm extends Component {
                           <br />
                           <input type="file" ref={this.chooseFile} onChange={this.onImageChange} style={{ display: 'none' }}
                             accept="image/png, image/jpeg" />
-                          {this.state.imagePreview ? <div><img className="imagePreview" src={this.state.imagePreview} /></div> : null}
+                          {this.state.imagePreview ? <div><img className="imagePreview" src={this.state.imagePreview} alt="Unavailable" /></div> : null}
                         </div>
                     }
 
@@ -181,9 +181,22 @@ class PostForm extends Component {
                     <select onChange={(e) => { this.setState({ visibility: e.target.value }) }}>
                       <option value="PUBLIC">PUBLIC</option>
                       <option value="FRIEND">FRIEND</option>
+                      <option value="PRIVATE">PRIVATE</option>
                     </select>
                     <label>Unlisted:</label>
                     <input type="checkbox" checked={unlisted} onChange={(e) => this.setState({ unlisted: e.target.checked })} />
+                    {
+                      this.state.visibility === "PRIVATE" ?
+                        <TextField
+                          style={{ margin: 10 }}
+                          value={privateToAuthor}
+                          onChange={(e) => this.setState({ privateToAuthor: e.target.value })}
+                          placeholder="private to"
+                          variant="filled"
+                        />
+                        :
+                        null
+                    }
                     <Button
                       id="post-btn"
                       style={{ marginTop: 15 }}
