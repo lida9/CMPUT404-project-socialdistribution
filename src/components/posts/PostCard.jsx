@@ -128,23 +128,6 @@ class PostCard extends Component {
     }
   }
 
-  checkLikes = async() =>{
-    "service/author/<str:author_write_article_ID>/posts/<uuid:postID>/likes/"
-    var post_author_id = this.props.post.authorID
-    var post_id = this.props.post.postID
-    try{
-      let doc = await axios.get(`service/author/${post_author_id}/posts/${post_id}/likes/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } })
-      if (doc.status === 200){
-        console.log(doc.data);
-      }
-
-    }catch(err){
-      console.log(err.response.status)
-    }
-
-
-  }
-
   render() {
     // console.log("this.props.post.postID:", this.props.post.postID);
     var clicked_posts = this.checkIfClicked();
@@ -157,21 +140,15 @@ class PostCard extends Component {
     var author_id = this.props.authorID.authorID;
 
     if (this.props.post.visibility === "FRIEND") {
-      var isfriend = true;
       if (login_id === author_id) {
         var visible = true;
       } else {
         var visible = false;
       }
-
-
     } else {
       var visible = true;
-      var isfriend = false;
     }
 
-
-    // console.log(this.props.post);
     return (
       <div style={{ border: "solid 1px grey" }}>
         <h1>Title: {this.props.post.title}</h1>
@@ -181,10 +158,6 @@ class PostCard extends Component {
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.ShowEdit}>edit post</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.deletepostClick}>Delete</Button>
-        {
-          isfriend ?<Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.checkLikes}>check likes</Button> : null
-        }
-
         <br />
         {
           this.state.showComments ?

@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { Modal } from "react-bootstrap";
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { Button } from "@material-ui/core"
 import ReactMarkDown from "react-markdown";
 import CommentCard from "../comments/CommentCard";
 import CommentForm from "../comments/CommentForm";
+import AuthorLike from "../authors/AuthorLike";
 import "../../styles/postCard.css";
 
 // This component is used to display the Post
@@ -20,7 +22,9 @@ class PostCard extends Component {
     unlisted: false,
     like_button_text: "like",
     showComments: false,
-    comments: []
+    comments: [],
+    showModal: false,
+    likes: []
   }
 
   likepostClick = async () => {
@@ -125,6 +129,34 @@ class PostCard extends Component {
     return this.props.post.author.id;
   }
 
+  checkLikes = async () => {
+    var post_author_id = this.props.post.authorID
+    var post_id = this.props.post.postID
+    try{
+      let doc = await axios.get(`service/author/${post_author_id}/posts/${post_id}/likes/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } })
+      if (doc.status === 200){
+        console.log(doc.data);
+        var likesArray = []
+        for (let like of doc.data) {
+          likesArray.push(like.author.displayName);
+        }
+        this.setState({ likes: likesArray });
+      }
+
+    }catch(err){
+      console.log(err.response.status)
+    }
+  }
+
+  getModal = () => {
+    this.checkLikes();
+    this.setState({ showModal: true});
+  };
+
+  hideModal = () => {
+    this.setState({ showModal: false });
+  };
+
   reshare = async (authorID) => {
     if (this.props.post.visibility === "PUBLIC") {
       // get logged in author's followers
@@ -181,6 +213,7 @@ class PostCard extends Component {
     var author_id = this.props.authorID.authorID;
 
     if (this.props.post.visibility === "FRIEND") {
+      var isfriend = true;
       if (login_id === author_id) {
         var visible = true;
       } else {
@@ -188,6 +221,7 @@ class PostCard extends Component {
       }
     } else {
       var visible = true;
+      var isfriend = false;
     }
 
     return (
@@ -203,6 +237,25 @@ class PostCard extends Component {
         Content: {this.renderPostContent()}
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick}>{this.state.like_button_text}</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
+        {
+          isfriend ?<Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.getModal}>check likes</Button> : null
+        }
+        <Modal
+          show={this.state.showModal}
+          onHide={this.hideModal}
+          centered
+        >
+          <Modal.Body>
+            <h4>Who liked this post:</h4>
+            <div>
+            <hr/>
+              {this.state.likes.map(function(name, idx){
+                return <AuthorLike key={idx} name={name} />;
+              })}
+            </div>
+          </Modal.Body>
+
+        </Modal>
         {
           this.state.showComments ?
             <div>

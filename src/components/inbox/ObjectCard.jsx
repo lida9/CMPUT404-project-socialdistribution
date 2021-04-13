@@ -6,11 +6,6 @@ import CommentNoteCard from './CommentNoteCard'
 
 // This component is used to display items in inbox
 class ObjectCard extends Component {
-  
-  getRemotePost = (authorID, postID) => {
-    // todo
-    // get remote post
-  }
 
   renderItem = () => {
     if (this.props.item.type === "post")  {
