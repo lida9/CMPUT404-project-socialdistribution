@@ -1,10 +1,14 @@
 from rest_framework.test import APITestCase
 from socialdistribution.models import Inbox
+import base64
 
 class InboxTests(APITestCase):
     url = "/service/author/"
+    auth_str = base64.b64encode(b'socialdistribution_t18:c404t18').decode()
+    
     def create_account(self):
         # create author account
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         response = self.client.post(self.url, {"email":"test@gmail.com", "password":"pass", "username":"Alice", "github":""})
         self.assertEqual(response.status_code, 201)
         return response.data['authorID']
@@ -20,6 +24,7 @@ class InboxTests(APITestCase):
             "visibility":"PUBLIC",
             "unlisted": False
         }
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID = self.create_account()
         post_url = self.url + authorID + "/posts/"
         response = self.client.post(post_url, data) # create post
@@ -27,6 +32,7 @@ class InboxTests(APITestCase):
         return authorID, postID
 
     def test_post_to_inbox(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID, postID = self.create_post()
         inbox_url = self.url + authorID + "/inbox/"
         # send post to inbox
@@ -47,6 +53,7 @@ class InboxTests(APITestCase):
         self.assertEqual(len(inbox.items), 2)
 
     def test_get_inbox(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID, postID = self.create_post()
         inbox_url = self.url + authorID + "/inbox/"
         # send post to inbox

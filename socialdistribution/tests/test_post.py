@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase
 from socialdistribution.models import Post
+import base64
 
 class PostTests(APITestCase):
     url = "/service/author/"
@@ -13,13 +14,17 @@ class PostTests(APITestCase):
         "visibility":"PUBLIC",
         "unlisted": False
     }
+    auth_str = base64.b64encode(b'socialdistribution_t18:c404t18').decode()
+
     def create_account(self):
         # create author account
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         response = self.client.post(self.url, {"email":"test@gmail.com", "password":"pass", "username":"Alice", "github":""})
         self.assertEqual(response.status_code, 201)
         return response.data['authorID']
 
     def test_create_post(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID = self.create_account()
         post_url = self.url + authorID + "/posts/"
         response = self.client.post(post_url, self.data)
@@ -27,6 +32,7 @@ class PostTests(APITestCase):
         self.assertEqual(Post.objects.count(), 1)
     
     def test_get_all_posts(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID = self.create_account()
         post_url = self.url + authorID + "/posts/"
         data2 = {
@@ -50,6 +56,7 @@ class PostTests(APITestCase):
         self.assertEqual(response.data["posts"][1]["title"], "My Post")
 
     def create_post(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID = self.create_account()
         post_url = self.url + authorID + "/posts/"
         response = self.client.post(post_url, self.data) # create post
@@ -57,6 +64,7 @@ class PostTests(APITestCase):
         return authorID, postID
 
     def test_get_post_detail(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID, postID = self.create_post()
         post_detail_url = self.url + authorID + "/posts/" + postID + "/"
 
@@ -66,11 +74,13 @@ class PostTests(APITestCase):
         self.assertEqual(response.data["title"], "My Post")
 
     def test_get_post_404(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         invalid_url = self.url + "b05be45760544a0f98cbb7635769dd31/posts/a8416c4a-56fb-0011-b0a1-486ab55608a8/"
         response = self.client.get(invalid_url)
         self.assertEqual(response.status_code, 404)
 
     def test_put_post(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID = self.create_account()
         postID = "a8416c4a-56fb-4dfc-b0a1-486ab55608a8"
         post_detail_url = self.url + authorID + "/posts/" + postID + "/"
@@ -81,6 +91,7 @@ class PostTests(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_update_post(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID, postID = self.create_post()
         post_detail_url = self.url + authorID + "/posts/" + postID + "/"
 
@@ -104,6 +115,7 @@ class PostTests(APITestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_delete_post(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic {}'.format(self.auth_str))
         authorID, postID = self.create_post()
         post_detail_url = self.url + authorID + "/posts/" + postID + "/"
         response = self.client.get(self.url + authorID + "/posts/") # create post

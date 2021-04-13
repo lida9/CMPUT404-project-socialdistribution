@@ -13,7 +13,7 @@ def get_valid_nodes():
 
 def is_valid_node(request):
     host = request.build_absolute_uri("/")
-    if host not in ["http://127.0.0.1:8000/", "http://localhost:8000/", "https://cmput-404-socialdistribution.herokuapp.com/"]:
+    if host not in ["http://127.0.0.1:8000/", "http://localhost:8000/", "https://cmput-404-socialdistribution.herokuapp.com/", 'http://testserver/']:
         # check valid node
         valid_nodes = get_valid_nodes()
         if host not in valid_nodes:
