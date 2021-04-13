@@ -93,14 +93,15 @@ class PostForm extends Component {
       try {
         var res = await axios.post(`service/author/${authorID.authorID}/posts/`, { title, source, origin, description, contentType, content, visibility, unlisted }, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
         this.setState({ show: false });
-        console.log("post res:", res.data.postID);
+        console.log("postID(unlisted):", res.data.postID);
         this.props.getPosts();
         if (!unlisted) { // unlisted === false
           this.sendToFollowers(authorID.authorID, res.data.postID, visibility);
         }
 
         if (unlisted) {
-          alert(`Remember this route! You will not see this again! \n /post/unlisted/${res.data.postID}`);
+          let msg = "Remember this route! You will not see this again! /post/unlisted/" + res.data.postID;
+          alert(msg);
         }
 
       } catch (err) {
@@ -183,7 +184,6 @@ class PostForm extends Component {
                     </select>
                     <label>Unlisted:</label>
                     <input type="checkbox" checked={unlisted} onChange={(e) => this.setState({ unlisted: e.target.checked })} />
-                    {/* {JSON.stringify(unlisted)} */}
                     <Button
                       id="post-btn"
                       style={{ marginTop: 15 }}
