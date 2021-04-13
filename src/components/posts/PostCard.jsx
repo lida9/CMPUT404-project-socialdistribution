@@ -109,6 +109,7 @@ class PostCard extends Component {
     this.setState({ showComments: !showComments })
   }
 
+
   deletepostClick = async () => {
     var login_author_id = this.props.authorID.authorID
     var post_author_id = this.props.post.authorID
@@ -144,13 +145,10 @@ class PostCard extends Component {
       } else {
         var visible = false;
       }
-
-
     } else {
       var visible = true;
     }
 
-    // console.log(this.props.post);
     return (
       <div style={{ border: "solid 1px grey" }}>
         <h1>Title: {this.props.post.title}</h1>
@@ -160,7 +158,6 @@ class PostCard extends Component {
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.ShowEdit}>edit post</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.deletepostClick}>Delete</Button>
-
         <br />
         {
           this.state.showComments ?
