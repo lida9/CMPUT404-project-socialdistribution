@@ -169,7 +169,7 @@ class PostCard extends Component {
                   return (
                     visible ?
                       <div key={index}>
-                        <CommentCard content={comment} />
+                        <CommentCard content={comment} postID={""} />
                       </div> : null
                   );
                 })

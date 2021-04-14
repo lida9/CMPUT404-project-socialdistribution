@@ -23,11 +23,17 @@ class CommentCard extends Component {
       "postID": ""
     }
     post_information['author_like_ID'] = this.props.authorID.authorID
-    post_information['commentID'] = this.props.content.commentID
-    post_information['postID'] = this.props.content.postID
-    var comment_author_information = this.props.content.author_write_comment_ID
 
-
+    if ("commentID" in this.props.content) {
+      post_information['commentID'] = this.props.content.commentID
+      post_information['postID'] = this.props.content.postID
+      var comment_author_information = this.props.content.author_write_comment_ID
+    } else {
+      // remote comment
+      post_information['commentID'] = this.props.content.id
+      post_information['postID'] = this.props.postID
+      var comment_author_information = this.props.content.author.id
+    }
 
     try {
       let doc = await axios.post(`service/author/${comment_author_information}/inbox/`, post_information,
