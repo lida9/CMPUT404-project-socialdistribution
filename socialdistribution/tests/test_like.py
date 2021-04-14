@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase
 from socialdistribution.models import LikePost,LikeComment,Liked
+import base64
 
 class LikeTest(APITestCase):
     url = "/service/author/"
@@ -40,6 +41,11 @@ class LikeTest(APITestCase):
     "commentID":"",
     "postID":""
     }
+    def setUp(self):
+        b_token = 'socialdistribution_t18:c404t18'.encode('utf-8')
+        credentials = base64.b64encode(b_token)
+        credentials = credentials.decode('utf-8')
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Basic '+credentials
 
     def create_account(self):
         # create author account
