@@ -1,8 +1,17 @@
 from rest_framework.test import APITestCase
 from socialdistribution.models import Follow
+import base64
+
 
 class FollowerTests(APITestCase):
     url = "/service/author/"
+
+    def setUp(self):
+        b_token = 'socialdistribution_t18:c404t18'.encode('utf-8')
+        credentials = base64.b64encode(b_token)
+        credentials = credentials.decode('utf-8')
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Basic '+credentials
+        
     def create_accounts(self):
         # create author account
         response = self.client.post(self.url, {"email":"test@gmail.com", "password":"pswd", "username":"Alice", "github":""})
