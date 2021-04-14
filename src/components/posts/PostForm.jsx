@@ -55,24 +55,40 @@ class PostForm extends Component {
   }
 
   sendToFollowers = async (authorID, postID, visibility) => {
-    if (visibility === "PUBLIC") {
-      // get followers
-      var res = await axios.get(`service/author/${authorID}/followers/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
-    } else {
-      // get friends
-      var res = await axios.get(`service/author/${authorID}/friends/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
-    }
-    var authors = res.data.items;
-    for (let author of authors) {
-      let data = { "type": "post", "postID": postID };
-      if ("authorID" in author) {
-        // local
-        axios.post(`service/author/${author.authorID}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
-      } else {
-        // remote
-        axios.post(`service/author/${author.id}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+      if (visibility === "PRIVATE") {
+          var res = await axios.get(`service/author/${this.state.privateToAuthor}/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+          var author = res.data;
+
+          let data = { "type": "post", "postID": postID };
+          if ("authorID" in author) {
+            // local
+            axios.post(`service/author/${author.authorID}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+          } else {
+            // remote
+            axios.post(`service/author/${author.id}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+          }
       }
-    }
+      else {
+          if (visibility === "PUBLIC") {
+            // get followers
+            var res = await axios.get(`service/author/${authorID}/followers/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+        } else {
+            // get friends
+            var res = await axios.get(`service/author/${authorID}/friends/`, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+        }
+          var authors = res.data.items;
+          for (let author of authors) {
+            let data = { "type": "post", "postID": postID };
+            if ("authorID" in author) {
+              // local
+              axios.post(`service/author/${author.authorID}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+            } else {
+              // remote
+              axios.post(`service/author/${author.id}/inbox/`, data, { auth: { username: "socialdistribution_t18", password: "c404t18" } });
+            }
+          }
+      }
+
   }
 
   handlePost = async () => {

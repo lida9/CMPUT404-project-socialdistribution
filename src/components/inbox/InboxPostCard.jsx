@@ -226,10 +226,15 @@ class PostCard extends Component {
 
     return (
       <div style={{ border: "solid 1px grey" }}>
+      {
+        this.props.post.visibility != "PRIVATE" ?
         <Button color="primary" variant="outlined" className="reshareBtn" style={{ margin: 5 }}
           onClick={() => this.reshare(author_id)}>
           Reshare with {this.getShareText()}
         </Button>
+          :
+          null
+      }
 
         <h1>Author: {this.props.post.author.displayName}</h1>
         <h1>Title: {this.props.post.title}</h1>
