@@ -259,7 +259,6 @@ class PostCard extends Component {
               })}
             </div>
           </Modal.Body>
-
         </Modal>
         {
           this.state.showComments ?
@@ -270,7 +269,7 @@ class PostCard extends Component {
                   return (
                     visible ?
                       <div key={index}>
-                        <CommentCard content={comment} />
+                        <CommentCard content={comment} postID={this.getPostID()} />
                       </div> : null
                   );
                 })
