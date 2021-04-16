@@ -115,6 +115,7 @@ class LikePostSerializer(serializers.ModelSerializer):
     object = serializers.URLField(source='get_like_model',required=False)
     author = serializers.CharField(source='get_author',required=False)
     at_context = serializers.URLField(source='get_at_context',required=False)
+    
 
     def to_representation(self, instance):
         response = super(LikePostSerializer, self).to_representation(instance)
@@ -130,7 +131,6 @@ class LikePostSerializer(serializers.ModelSerializer):
                 author_data = author_data.json()
             else:
                 author_data = {'displayName':"An author"}
-
         del response['author_write_article_ID']
         del response['postID']
         del response['author_like_ID']

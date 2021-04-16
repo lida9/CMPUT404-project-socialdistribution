@@ -58,12 +58,48 @@ class PostCard extends Component {
           }
         })
       if (doc.status === 200) {
-        this.setState({ like_button_text: "you have liked!" });
+        window.location = '/'
+        this.setCookie("click", post_id);
       }
     } catch (err) {
+      window.alert("post may be deleted")
       console.log(err.response.status)
     }
   }
+  //set Cookie and check if clicked if referenced from 
+  //https://stackoverflow.com/questions/22279372/javascript-for-keeping-buttons-disabled-even-after-refreshing
+  //author: Gaurang Tandon
+  setCookie = (name, post_id) => {
+    // Set cookie to `namevalue;`
+    // Won't overwrite existing values with different names
+    var insert_array = name + "=" + post_id + '==';
+    document.cookie += insert_array;
+    // document.cookie += insert_array;
+  }
+
+  checkIfClicked = () => {
+    // Split by `;`
+
+    var cookie = document.cookie.split("==");
+    // iterate over cookie array
+    var posts = {};
+    for (var i = 0; i < cookie.length; i++) {
+      var c = cookie[i];
+      // if it contains string "click"
+
+      if (/click/.test(c)) {
+        c = c.split("=");
+        var name = c[0];
+        var post_id = c[1];
+        posts[post_id] = name;
+
+      }
+
+    }
+    // cookie does not exist
+    return posts;
+  }
+
 
   renderPostContent = () => {
     const { contentType } = this.props.post;
@@ -209,6 +245,14 @@ class PostCard extends Component {
   }
 
   render() {
+
+    var clicked_posts = this.checkIfClicked();
+    for (var key in clicked_posts) {
+      if (key === this.props.post.postID) {
+        var clicked = true;
+      }
+    }
+
     var login_id = this.props.post.author.authorID;
     var author_id = this.props.authorID.authorID;
 
@@ -240,7 +284,7 @@ class PostCard extends Component {
         <h1>Title: {this.props.post.title}</h1>
         <h2>Description: {this.props.post.description}</h2>
         Content: {this.renderPostContent()}
-        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick}>{this.state.like_button_text}</Button>
+        <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.likepostClick} disabled={clicked === true} >{this.state.like_button_text}</Button>
         <Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.handleShowComments}>{this.state.showComments ? "Close" : "Show Comments"}</Button>
         {
           isfriend ?<Button color="primary" variant="outlined" style={{ margin: 5 }} onClick={this.getModal}>check likes</Button> : null

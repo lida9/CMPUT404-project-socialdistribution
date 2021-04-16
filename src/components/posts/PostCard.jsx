@@ -41,8 +41,8 @@ class PostCard extends Component {
     try {
       let doc = await axios.post(`service/author/${post_author_id}/inbox/`, post_information, { auth: { username: "socialdistribution_t18", password: "c404t18" } })
       if (doc.status === 200) {
+        window.location = '/aboutme'
         this.setCookie("click", post_id);
-        this.disabled = true;
       }
     } catch (err) {
       console.log(err.response.status)

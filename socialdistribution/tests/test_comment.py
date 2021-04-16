@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from socialdistribution.models import Comment
 import base64
+import requests
 
 class CommentTests(APITestCase):
     url = "/service/author/"
@@ -26,6 +27,7 @@ class CommentTests(APITestCase):
     "author_write_comment_ID":"",
     "comment": "I am a comment"
     }
+
 
     def setUp(self):
         b_token = 'socialdistribution_t18:c404t18'.encode('utf-8')
@@ -72,3 +74,10 @@ class CommentTests(APITestCase):
         response = self.client.get(comment_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['count'] ,1)
+    
+
+
+        
+
+        
+        
